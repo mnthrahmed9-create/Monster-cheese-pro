@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>شطرنج الوحوش 3D</title>
+<style>
+:root{color-scheme:dark;box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;background:#0a0514;font-family:system-ui,"Segoe UI",Tahoma,Arial,sans-serif}
+#app{position:relative;width:100%;max-width:480px;margin:0 auto;line-height:0}
+#app img{width:100%;height:auto;display:block}
+.hs{position:absolute;background:transparent;border:0;border-radius:14px;padding:0;cursor:pointer;transition:background .12s,box-shadow .12s}
+.hs:active{background:#c084fc33;box-shadow:0 0 18px #a855f7 inset}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:#1b0f2e;color:#e9d5ff;border:1px solid #7e22ce;border-radius:20px;padding:10px 20px;font-size:14px;line-height:1.4;opacity:0;pointer-events:none;transition:.25s;z-index:9;white-space:nowrap}
+#toast.on{opacity:1;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+<div id="app">
+<img src="bg.jpg" alt="شطرنج الوحوش 3D" draggable="false">
+<button class="hs" aria-label="ابدأ المواجهة" data-go="game" style="left:27.62%;top:40.00%;width:45.06%;height:7.07%"></button>
+<button class="hs" aria-label="الاتصال بالسحر" data-go="soon:قريباً: اللعب أونلاين" style="left:2.62%;top:55.65%;width:45.64%;height:19.05%"></button>
+<button class="hs" aria-label="الحكمة القديمة" data-go="game" style="left:52.03%;top:55.65%;width:45.35%;height:19.05%"></button>
+<button class="hs" aria-label="تحديات كبرى" data-go="soon:قريباً: التحديات والأحداث" style="left:2.62%;top:76.05%;width:45.64%;height:15.78%"></button>
+<button class="hs" aria-label="تحالف السحرة" data-go="soon:قريباً: اللعب مع الأصدقاء" style="left:52.03%;top:76.05%;width:45.35%;height:15.78%"></button>
+<button class="hs" aria-label="حسابي" data-go="soon:صفحة الحساب قريباً" style="left:0.00%;top:91.97%;width:23.98%;height:8.03%"></button>
+<button class="hs" aria-label="المتجر" data-go="soon:المتجر قريباً" style="left:23.98%;top:91.97%;width:24.71%;height:8.03%"></button>
+<button class="hs" aria-label="التصنيف" data-go="soon:التصنيف قريباً" style="left:48.69%;top:91.97%;width:26.16%;height:8.03%"></button>
+<button class="hs" aria-label="الرئيسية" data-go="home" style="left:74.85%;top:91.97%;width:25.15%;height:8.03%"></button>
+</div>
+<div id="toast"></div>
+<script>
+var PREVIEW=false;
+var t=document.getElementById("toast"),tm;
+function toast(m){t.textContent=m;t.classList.add("on");clearTimeout(tm);tm=setTimeout(function(){t.classList.remove("on")},1800)}
+document.querySelectorAll(".hs").forEach(function(b){
+ b.onclick=function(){
+  var g=b.dataset.go;
+  if(g==="game"){ if(PREVIEW)toast("⚔️ ينتقل إلى game.html"); else location.href="game.html"; }
+  else if(g==="home"){ window.scrollTo({top:0,behavior:"smooth"}); }
+  else toast(g.split(":")[1]);
+ };
+});
+</script>
+</body>
+</html>
