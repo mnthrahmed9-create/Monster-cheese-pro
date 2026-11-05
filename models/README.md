@@ -1,7 +1,11 @@
-
-king.glb — الملك
-queen.glb — الوزير
-rook.glb — القلعة
-bishop.glb — الفيل
-knight.glb — الحصان
-pawn.glb — الجندي
+Monster-cheese-pro
+│
+├── index.html
+│
+└── models
+    ├── king.glb
+    ├── queen.glb
+    ├── rook.glb
+    ├── bishop.glb
+    ├── knight.glb
+    └── pawn.glb
