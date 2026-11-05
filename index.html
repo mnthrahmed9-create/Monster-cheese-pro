@@ -10,7 +10,7 @@
             padding: 0;
             box-sizing: border-box;
             user-select: none;
-            -webkit-tap-highlight-color: transparent; /* لمنع وميض الشاشة عند اللمس */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -20,26 +20,23 @@
             height: 100vh;
         }
 
-        /* الحاوية الرئيسية للصورة */
         #ui-container {
             position: relative;
             width: 100%;
             height: 100%;
             
-            /* ⚠️ تأكد أن اسم الصورة هنا يطابق اسم الصورة المرفوعة على GitHub */
-            background-image: url('menu.jpg'); 
+            /* تم تعديل الامتداد إلى png ليطابق صورتك */
+            background-image: url('menu.png'); 
             
-            background-size: 100% 100%; /* تمدد الصورة لتملأ الشاشة بالكامل */
+            background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
         }
 
-        /* =========================================
-           الأزرار الشفافة
-           ========================================= */
+        /* الأزرار الشفافة */
         .hotspot {
             position: absolute;
-            background: transparent; /* شفافة */
+            background: transparent;
             border: none;
             cursor: pointer;
             border-radius: 12px;
@@ -47,41 +44,30 @@
             transition: background 0.1s;
         }
 
-        /* تأثير وميض خفيف جداً عند الضغط ليعرف المستخدم أنه ضغط على الزر */
         .hotspot:active {
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* =========================================
-           إحداثيات الأزرار (مضبوطة على الصورة الجديدة)
-           ========================================= */
-        
-        /* --- الشريط العلوي --- */
+        /* إحداثيات الأزرار */
         .btn-profile { top: 2%; left: 2%; width: 35%; height: 7.5%; } 
         .btn-gold-plus { top: 2.5%; left: 55%; width: 5%; height: 3.5%; border-radius: 50%; } 
         .btn-gem-plus { top: 2.5%; left: 76%; width: 5%; height: 3.5%; border-radius: 50%; } 
         .btn-settings { top: 2%; left: 84%; width: 6.5%; height: 4%; border-radius: 50%; } 
         .btn-mail { top: 2%; right: 2%; width: 7.5%; height: 4%; border-radius: 10px; } 
 
-        /* --- القائمة اليسرى --- */
         .btn-quests { top: 33.5%; left: 2%; width: 18%; height: 6.5%; } 
         .btn-achievements { top: 41%; left: 2%; width: 18%; height: 6.5%; } 
         .btn-rewards { top: 48.5%; left: 2%; width: 18%; height: 6.5%; } 
         .btn-ranks { top: 56%; left: 2%; width: 18%; height: 6.5%; } 
 
-        /* --- صندوق المكافآت اليومية (اليمين) --- */
         .btn-daily-chest { top: 33.5%; right: 2%; width: 28%; height: 20%; } 
         .btn-streak { top: 54.5%; right: 2%; width: 28%; height: 5%; } 
 
-        /* --- الزر الرئيسي الكبير (ابدأ المواجهة) --- */
         .btn-start { bottom: 26%; left: 20%; width: 60%; height: 8%; } 
-
-        /* --- الأزرار الثلاثة السفلية --- */
         .btn-online { bottom: 13%; left: 2.5%; width: 29%; height: 8%; } 
         .btn-ai { bottom: 13%; left: 35.5%; width: 29%; height: 8%; } 
         .btn-challenges { bottom: 13%; right: 2.5%; width: 29%; height: 8%; } 
 
-        /* --- شريط التنقل السفلي --- */
         .nav-store { bottom: 0; left: 0; width: 25%; height: 9%; } 
         .nav-inventory { bottom: 0; left: 25%; width: 25%; height: 9%; } 
         .nav-account { bottom: 0; left: 50%; width: 25%; height: 9%; } 
@@ -110,9 +96,9 @@
         <div class="hotspot btn-daily-chest" onclick="alert('افتح صندوق المكافآت!')"></div>
         <div class="hotspot btn-streak" onclick="alert('سلسلة المكافآت')"></div>
 
-        <!-- 🟢 الأزرار اللي تنقل للعبة (مربوطة بملف game.html) -->
-        <div class="hotspot btn-start" onclick="window.location.href='game.html'"></div>
-        <div class="hotspot btn-ai" onclick="window.location.href='game.html'"></div>
+        <!-- الأزرار اللي تنقل للعبة (مؤقتاً تطلع رسالة لأن ملف اللعبة غير موجود) -->
+        <div class="hotspot btn-start" onclick="alert('اللعبة قيد التطوير... سيتم فتحها قريباً!')"></div>
+        <div class="hotspot btn-ai" onclick="alert('اللعبة قيد التطوير... سيتم فتحها قريباً!')"></div>
 
         <!-- الأزرار السفلية الباقية -->
         <div class="hotspot btn-online" onclick="alert('اللعب أونلاين (قريباً)')"></div>
