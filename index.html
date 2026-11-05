@@ -10,36 +10,44 @@
             padding: 0;
             box-sizing: border-box;
             user-select: none;
+            -webkit-tap-highlight-color: transparent; 
         }
 
         body {
             background-color: #000;
-            overflow: hidden; /* منع التمرير */
+            overflow: hidden; 
             width: 100vw;
             height: 100vh;
         }
 
-        /* الحاوية اللي تشيل الصورة */
+        /* الحاوية الرئيسية للصورة */
         #ui-container {
             position: relative;
             width: 100%;
             height: 100%;
-            background-image: url('menu.jpg');
-            background-size: 100% 100%; /* تمدد الصورة لتملأ الشاشة */
+            
+            /* 
+             ⚠️ هنا تم وضع اسم صورتك بالضبط مع تعديل المسافة إلى %20 
+             الصورة اللي أنت رافعها اسمها: menu.jpg (2).png
+            */
+            background-image: url('menu.jpg%20(2).png');
+            
+            background-size: 100% 100%; /* تمدد الصورة لتملأ الشاشة بالكامل */
             background-position: center;
             background-repeat: no-repeat;
         }
 
-        /* تنسيق الأزرار (شفافة حالياً مع حدود حمراء للمساعدة) */
+        /* تنسيق الأزرار الشفافة */
         .hotspot {
             position: absolute;
-            background: rgba(255, 0, 0, 0.1); /* لون أحمر شفاف */
-            border: 2px dashed red; /* حدود حمراء حتى تشوف الأزرار */
+            background: rgba(255, 0, 0, 0.1); /* لون أحمر شفاف جداً للاختبار */
+            border: 2px dashed red; /* حدود حمراء للاختبار */
             cursor: pointer;
             border-radius: 10px;
+            z-index: 10;
         }
 
-        /* تأثير عند الضغط */
+        /* تأثير عند الضغط على الزر */
         .hotspot:active {
             background: rgba(255, 255, 255, 0.3);
         }
