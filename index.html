@@ -4,746 +4,440 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>MONSTER CHESS</title>
+<title>Monster Chess 3D</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;user-select:none}
-html,body{width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#07395b;color:white}
-button,select{font-family:inherit;cursor:pointer}
-button:active{transform:scale(.96)}
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
 
 :root{
- --blue:#0879a9;
- --deep:#07334e;
- --gold:#ffd45b;
- --orange:#f39b27;
- --panel:#ffffff20;
+ --gold:#ffd477;
+ --gold2:#a96d20;
+ --bg:#080d18;
+ --panel:#17243a;
 }
-
-/* ================= MAIN LOBBY ================= */
-
-#main-menu{
- position:fixed;inset:0;z-index:1000;
- display:flex;flex-direction:column;
- overflow-y:auto;overflow-x:hidden;
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+ margin:0;
  background:
- radial-gradient(circle at 50% 30%,#30b6d0 0%,transparent 45%),
- linear-gradient(160deg,#087aa8,#075078 55%,#092d49);
- padding:10px 12px 85px;
+ radial-gradient(ellipse at 50% 5%,#35486a 0%,transparent 48%),
+ linear-gradient(180deg,#111b2d,#080d18 75%);
+ color:#fff;
+ font-family:Cairo,sans-serif;
+ min-height:100vh;
+ overflow-x:hidden;
 }
+button{font-family:inherit;cursor:pointer}
+.app{max-width:500px;margin:auto;padding-bottom:95px}
 
-#main-menu:before{
- content:"";position:fixed;inset:0;pointer-events:none;
- background:
- radial-gradient(circle at 10% 20%,#ffffff19 0 3px,transparent 4px),
- radial-gradient(circle at 85% 35%,#ffffff15 0 4px,transparent 5px),
- radial-gradient(circle at 25% 75%,#ffffff15 0 3px,transparent 4px);
- background-size:110px 120px,150px 150px,130px 140px;
+/* HEADER */
+.header{
+ display:flex;justify-content:space-between;align-items:center;
+ padding:13px 15px;
+ background:#09111feF;
+ border-bottom:1px solid #d5a64b44;
+ box-shadow:0 7px 25px #0008;
+ position:relative;z-index:5;
 }
-
-.lobby-top{
- position:relative;z-index:2;
- display:flex;justify-content:space-between;
- align-items:center;gap:7px;
-}
-
-.profile{
- display:flex;align-items:center;gap:8px;
- background:#073b5ddd;
- border:1px solid #ffffff44;
- border-radius:30px;padding:6px 12px 6px 7px;
-}
+.user{display:flex;align-items:center;gap:10px}
 .avatar{
- width:42px;height:42px;border-radius:50%;
- background:linear-gradient(#ffdf84,#d88c21);
- border:2px solid #fff;
- display:grid;place-items:center;font-size:25px;
+ width:48px;height:48px;border-radius:16px;
+ background:linear-gradient(145deg,#ffdf91,#8c4c1d);
+ display:grid;place-items:center;font-size:29px;
+ border:2px solid var(--gold);
+ box-shadow:inset 0 3px 8px #fff8,0 6px 15px #0009;
 }
-.profile b{font-size:13px;display:block}
-.profile small{font-size:10px;color:#ffe68c;display:block;margin-top:4px}
-
-.wallet{display:flex;gap:5px}
-.wallet-item{
- background:#073b5ddd;border:1px solid #ffffff44;
- border-radius:25px;padding:9px 10px;
- font-size:12px;font-weight:bold;color:#ffe68c;
- white-space:nowrap;
-}
-.add-money{
- background:#f8b52b;border:0;border-radius:50%;
- width:20px;height:20px;color:#573300;font-weight:bold;
- margin-right:4px;
+.name{font-size:13px;font-weight:900}
+.level{font-size:10px;color:var(--gold)}
+.money{display:flex;gap:6px}
+.money div{
+ background:linear-gradient(145deg,#263752,#101a2c);
+ border:1px solid #ffffff22;
+ border-radius:12px;padding:6px 9px;
+ font-size:12px;box-shadow:0 4px 0 #050a12;
 }
 
-.logo-area{
- position:relative;z-index:1;
- text-align:center;margin:12px 0 5px;
-}
-.logo-dragon{
- font-size:60px;
- filter:drop-shadow(0 8px 8px #002a42);
- animation:float 3s infinite ease-in-out;
-}
-@keyframes float{50%{transform:translateY(-7px)}}
-.logo-area h1{
- font-size:27px;font-weight:1000;
- color:#ffe27b;
- text-shadow:0 3px 0 #8b450b,0 6px 12px #00233c;
- letter-spacing:1px;
-}
-.logo-area p{font-size:12px;color:#d4f4ff;margin-top:5px}
-
+/* HERO 3D */
 .hero{
- position:relative;z-index:1;
- min-height:180px;margin:10px 0;
- border:2px solid #ffffff4a;border-radius:22px;
- background:linear-gradient(120deg,#164c70dd,#087e9b99);
- display:flex;align-items:center;justify-content:space-around;
- overflow:hidden;box-shadow:0 8px 20px #00263b55;
+ margin:18px 13px 22px;
+ height:315px;
+ border-radius:25px;
+ position:relative;
+ overflow:hidden;
+ border:1px solid #e9bd65;
+ background:
+ radial-gradient(circle at 50% 45%,#75502d 0%,transparent 37%),
+ radial-gradient(circle at 80% 20%,#344d70,transparent 50%),
+ linear-gradient(145deg,#26364d,#0a1220 75%);
+ box-shadow:0 15px 0 #080d16,0 22px 35px #0009,
+ inset 0 2px 8px #fff3;
+ perspective:800px;
 }
 .hero:before{
- content:"";position:absolute;width:220px;height:220px;
- background:#4ce1ff25;border-radius:50%;
+ content:"";
+ position:absolute;
+ width:260px;height:260px;
+ border:1px solid #ffd47744;border-radius:50%;
+ top:25px;left:calc(50% - 130px);
+ box-shadow:0 0 0 18px #ffd4770b,
+ 0 0 0 38px #ffd47709,0 0 40px #d69b3b44;
 }
-.hero-content{position:relative;z-index:1;text-align:center}
-.hero-content h2{color:#ffe48c;font-size:20px}
-.hero-content p{font-size:12px;margin-top:8px;color:#d8f5ff}
-.hero-monster{
- position:relative;font-size:100px;
- filter:drop-shadow(0 12px 10px #001b32);
+.hero:after{
+ content:"";
+ position:absolute;
+ bottom:-40px;left:8%;width:84%;height:90px;
+ background:#0009;filter:blur(22px);
+ border-radius:50%;
 }
-.hero-crown{
- position:absolute;top:-7px;right:12px;font-size:35px;
+.hero-title{
+ position:absolute;top:16px;right:18px;z-index:3;
 }
-.hero-label{
- background:#ffb52c;color:#533000;
- border-radius:20px;padding:6px 12px;
- display:inline-block;margin-top:12px;
- font-size:11px;font-weight:bold;
+.hero-title small{
+ color:var(--gold);font-weight:900;
+ letter-spacing:3px;font-size:10px;
 }
-
-.section-title{
- position:relative;z-index:1;
- font-size:16px;font-weight:bold;
- margin:10px 3px;color:#ffdf85;
- display:flex;justify-content:space-between;
- align-items:center;
+.hero-title h1{
+ font-size:25px;line-height:1.4;
+ margin:5px 0;font-weight:900;
+ text-shadow:0 3px 10px #000;
 }
-.section-title small{font-size:10px;color:#d4f3ff}
-
-.mode-grid{
- position:relative;z-index:1;
- display:grid;grid-template-columns:1fr 1fr;
- gap:10px;
+.hero-title p{font-size:10px;color:#d3d9e3;margin:0}
+.monster{
+ position:absolute;
+ z-index:2;
+ left:50%;top:58px;
+ transform:translateX(-50%);
+ font-size:128px;
+ filter:drop-shadow(0 15px 10px #000)
+ drop-shadow(0 0 20px #ffbd4a55);
+ animation:monsterFloat 4s ease-in-out infinite;
 }
-.mode-card{
- min-height:108px;border:2px solid #ffffff55;
- border-radius:17px;color:white;
- display:flex;align-items:center;
- justify-content:space-around;
- padding:10px 5px;
- box-shadow:0 5px 0 #003a5b;
+@keyframes monsterFloat{
+ 0%,100%{transform:translate(-50%,0) rotate(-4deg)}
+ 50%{transform:translate(-50%,-13px) rotate(4deg)}
 }
-.mode-card span{font-size:37px}
-.mode-card b{font-size:14px}
-.mode-card small{display:block;font-size:10px;margin-top:6px;opacity:.9}
-.mode-ai{background:linear-gradient(140deg,#269bba,#07577e)}
-.mode-online{background:linear-gradient(140deg,#9b57c5,#57367d)}
-.mode-friends{background:linear-gradient(140deg,#e28d38,#a74a20)}
-.mode-tournament{background:linear-gradient(140deg,#439c69,#176342)}
-
-.quick-grid{
- position:relative;z-index:1;
+.chess-platform{
+ position:absolute;bottom:22px;left:50%;
+ transform:translateX(-50%) rotateX(55deg);
+ width:205px;height:100px;
  display:grid;grid-template-columns:repeat(4,1fr);
- gap:8px;margin:12px 0;
+ border:4px solid #d9a64c;
+ box-shadow:0 14px 0 #68451e,0 23px 20px #000;
 }
-.quick-item{
- background:#ffffff20;border:1px solid #ffffff44;
- border-radius:14px;padding:12px 2px;
- text-align:center;color:white;
-}
-.quick-item span{font-size:25px;display:block}
-.quick-item small{font-size:10px;display:block;margin-top:6px}
+.chess-platform span:nth-child(odd){background:#e8c47f}
+.chess-platform span:nth-child(even){background:#49331e}
+.chess-platform span:nth-child(5),
+.chess-platform span:nth-child(7){background:#49331e}
+.chess-platform span:nth-child(6),
+.chess-platform span:nth-child(8){background:#e8c47f}
 
-.daily{
- position:relative;z-index:1;
- display:flex;align-items:center;justify-content:space-between;
- background:linear-gradient(100deg,#f5b32e,#d77a20);
- border:2px solid #ffe9a0;
- border-radius:17px;padding:12px;
- color:#543000;margin-bottom:12px;
+.play{
+ position:absolute;bottom:17px;right:50%;
+ transform:translateX(50%);
+ z-index:4;
+ width:190px;padding:12px;
+ border:1px solid #fff1b0;
+ border-radius:15px;
+ background:linear-gradient(180deg,#ffe7a0,#d69b39 60%,#99601d);
+ color:#271707;font-size:16px;font-weight:900;
+ box-shadow:0 6px 0 #684318,0 12px 20px #0009,
+ inset 0 2px 4px #fff;
 }
-.daily b{font-size:14px}
-.daily small{display:block;font-size:10px;margin-top:5px}
-.daily button{
- border:0;border-radius:20px;
- background:#fff4cb;padding:10px 15px;
- font-weight:bold;color:#734100;
+.play:active{transform:translate(50%,4px);box-shadow:0 2px 0 #684318}
+
+/* TITLES */
+.section{padding:0 14px;margin-top:25px}
+.section-head{
+ display:flex;justify-content:space-between;
+ align-items:center;margin-bottom:13px;
+}
+.section-head h2{font-size:16px;margin:0;font-weight:900}
+.section-head h2 span{color:var(--gold)}
+.section-head small{font-size:10px;color:#aab6c9}
+
+/* 3D MODE CARDS */
+.modes{
+ display:grid;grid-template-columns:1fr 1fr;gap:13px;
+ perspective:700px;
+}
+.mode{
+ min-height:140px;
+ border-radius:19px;
+ padding:13px;
+ position:relative;
+ overflow:hidden;
+ background:linear-gradient(145deg,#293c59,#111c30);
+ border:1px solid #ffffff28;
+ box-shadow:0 7px 0 #080e19,0 13px 18px #0008,
+ inset 0 2px 5px #ffffff19;
+ transition:.2s;
+}
+.mode:active{transform:translateY(5px) rotateX(4deg);box-shadow:0 2px 0 #080e19}
+.mode:before{
+ content:"";position:absolute;width:100px;height:100px;
+ background:#ffffff09;border-radius:50%;
+ left:-25px;top:-35px;
+}
+.mode-icon{
+ font-size:43px;
+ filter:drop-shadow(0 6px 5px #0008);
+ display:block;
+}
+.mode h3{font-size:13px;margin:5px 0 0}
+.mode p{font-size:10px;color:#aebbd0;margin:2px 0}
+.mode-tag{
+ position:absolute;top:12px;left:10px;
+ font-size:9px;color:var(--gold);
+ background:#0005;border-radius:8px;padding:4px 7px;
+}
+.mode:nth-child(2){background:linear-gradient(145deg,#4b3527,#172034)}
+.mode:nth-child(3){background:linear-gradient(145deg,#344b42,#14251f)}
+.mode:nth-child(4){background:linear-gradient(145deg,#42365a,#17182e)}
+
+/* EVENT CARDS */
+.event{
+ display:flex;align-items:center;gap:12px;
+ padding:12px;margin-bottom:12px;
+ border-radius:17px;
+ background:linear-gradient(145deg,#263650,#111b2c);
+ border:1px solid #ffffff1c;
+ box-shadow:0 5px 0 #080d17,0 9px 14px #0007;
+}
+.event-icon{
+ width:52px;height:52px;flex-shrink:0;
+ display:grid;place-items:center;font-size:28px;
+ border-radius:15px;
+ background:linear-gradient(145deg,#ffd77e,#82501d);
+ box-shadow:inset 0 3px 5px #fff8,0 5px 9px #0008;
+}
+.event-info{flex:1}
+.event-info b{font-size:12px}
+.event-info p{font-size:10px;color:#aab6c9;margin:2px 0}
+.event button{
+ border:1px solid #dcb35f;
+ color:var(--gold);background:#dcb35f16;
+ border-radius:10px;padding:7px 10px;font-size:10px;
 }
 
-.difficulty{
- position:relative;z-index:1;
- display:flex;align-items:center;justify-content:space-between;
- background:#063b59cc;border:1px solid #ffffff44;
- border-radius:15px;padding:12px;margin-bottom:12px;
- font-size:13px;
+/* FOOTER */
+.bottom{
+ position:fixed;bottom:0;left:0;right:0;
+ max-width:500px;margin:auto;height:75px;
+ background:#0b1423f5;
+ border-top:1px solid #d7ae5b44;
+ display:grid;grid-template-columns:repeat(4,1fr);
+ z-index:10;
+ backdrop-filter:blur(15px);
+ padding-bottom:env(safe-area-inset-bottom);
 }
-#level{
- background:#075078;color:white;
- border:1px solid #ffdf7c;
- padding:8px;border-radius:10px;
+.nav{
+ background:none;border:0;color:#8997ad;
+ display:flex;flex-direction:column;
+ justify-content:center;align-items:center;
+ gap:3px;font-size:10px;
 }
+.nav span{font-size:23px}
+.nav.active{color:var(--gold);text-shadow:0 0 12px #e9bd65}
 
-.bottom-nav{
- position:fixed;z-index:1100;
- bottom:0;left:0;right:0;
- display:flex;justify-content:space-around;
- background:#062b45;
- border-top:1px solid #ffffff44;
- padding:9px 2px calc(9px + env(safe-area-inset-bottom));
+/* POPUP */
+.overlay{
+ display:none;position:fixed;inset:0;
+ background:#000c;z-index:50;
+ align-items:center;justify-content:center;padding:20px;
 }
-.bottom-nav button{
- border:0;background:none;color:#d4edfa;
- font-size:22px;min-width:55px;
+.overlay.show{display:flex}
+.popup{
+ width:100%;max-width:360px;text-align:center;
+ border:1px solid var(--gold);
+ border-radius:22px;padding:23px;
+ background:linear-gradient(145deg,#273954,#0b1423);
+ box-shadow:0 20px 60px #000;
 }
-.bottom-nav small{display:block;font-size:10px;margin-top:4px}
-.bottom-nav button.active{color:#ffd65f}
-
-/* النوافذ */
-#popup{
- display:none;position:fixed;inset:0;z-index:3000;
- background:#000a;align-items:center;justify-content:center;
- padding:20px;
-}
-.popup-box{
- width:100%;max-width:340px;
- padding:22px;background:linear-gradient(145deg,#155778,#082d49);
- border:2px solid #ffd45b;border-radius:20px;
- text-align:center;box-shadow:0 15px 50px #0009;
-}
-.popup-box h2{color:#ffdc76;margin-bottom:14px}
-.popup-box p{font-size:13px;line-height:1.8;color:#d7f1ff}
-.popup-box button{
- background:#ffbd39;color:#523000;
- border:0;border-radius:12px;padding:12px 25px;
- margin-top:16px;font-weight:bold;
-}
-.popup-close{
- position:absolute;top:15px;left:15px;
- width:35px;height:35px;border-radius:50%;
- border:0;background:#fff;color:#333;
-}
-
-/* ================= CHESS GAME ================= */
-
-#game-container{position:fixed;inset:0;display:none;background:#000}
-#game{position:absolute;inset:0}
-#game canvas{display:block;width:100%;height:100%;touch-action:none}
-
-#ui-layer{
- position:absolute;top:0;left:0;right:0;
- padding:10px;display:flex;
- justify-content:space-between;align-items:center;
- pointer-events:none;
-}
-#status{
- background:#101d2cdd;color:white;
- border:1px solid #ffd54f;border-radius:20px;
- padding:10px 13px;font-size:13px;font-weight:bold;
-}
-.controls{display:flex;gap:6px;pointer-events:auto}
-.icon-btn{
- width:40px;height:40px;border-radius:50%;
- border:1px solid #ffffff77;background:#142b42dd;
- color:white;font-size:19px;
-}
-#promotion{
- display:none;position:absolute;z-index:100;
- top:50%;left:50%;transform:translate(-50%,-50%);
- background:#132d48f5;color:white;
- border:2px solid #ffd54f;border-radius:18px;
- padding:20px;width:90%;max-width:330px;
- text-align:center;
-}
-#promotion h3{margin-bottom:15px}
-.promo-btns{display:flex;justify-content:center;gap:9px}
-.promo-btns button{
- width:52px;height:52px;border:0;border-radius:10px;
- background:#ffbf27;color:#222;font-size:28px;
-}
-#loading{
- display:none;position:absolute;top:50%;left:50%;
- transform:translate(-50%,-50%);color:white;
- font-size:20px;z-index:50;
+.popup-icon{font-size:48px}
+.popup h2{font-size:19px}
+.popup p{font-size:12px;color:#c0cada;line-height:1.9}
+.close{
+ padding:9px 28px;border:0;border-radius:10px;
+ background:linear-gradient(145deg,#ffdf91,#c28b34);
+ color:#251707;font-weight:900;
 }
 </style>
 </head>
 
 <body>
+<div class="app">
 
-<!-- MAIN LOBBY -->
-
-<div id="main-menu">
-
- <div class="lobby-top">
-
-  <div class="profile">
-   <div class="avatar">👑</div>
-   <div>
-    <b id="player-name">ملك الوحوش</b>
-    <small>⭐ المستوى 1</small>
-   </div>
-  </div>
-
-  <div class="wallet">
-   <div class="wallet-item">🪙 <span id="coins">1000</span>
-    <button class="add-money" onclick="openPopup('المحفظة','رصيدك التجريبي من العملات. يمكن ربط المتجر والدفع لاحقاً.')">+</button>
-   </div>
-   <div class="wallet-item">💎 50</div>
-  </div>
-
- </div>
-
- <div class="logo-area">
-  <div class="logo-dragon">🐉</div>
-  <h1>MONSTER CHESS</h1>
-  <p>معركة الملوك والوحوش</p>
- </div>
-
- <div class="hero">
-  <div class="hero-content">
-   <h2>عالم الوحوش ينتظرك!</h2>
-   <p>أثبت قوتك وكن ملك الشطرنج</p>
-   <div class="hero-label">⚔️ تحدي الأبطال</div>
-  </div>
-  <div class="hero-monster">
-   <div class="hero-crown">👑</div>
-   🦁
-  </div>
- </div>
-
- <div class="section-title">
-  اختر طريقة اللعب
-  <small>MONSTER ARENA</small>
- </div>
-
- <div class="mode-grid">
-
-  <button class="mode-card mode-ai" onclick="startGame()">
-   <span>🤖</span>
-   <div><b>ضد الكمبيوتر</b><small>ابدأ معركة فردية</small></div>
-  </button>
-
-  <button class="mode-card mode-online" onclick="openPopup('اللعب أونلاين','سيتم تفعيل اللعب المباشر مع لاعبين من جميع أنحاء العالم عند ربط اللعبة بسيرفر وقاعدة بيانات.')">
-   <span>🌍</span>
-   <div><b>لعب أونلاين</b><small>العب مع العالم</small></div>
-  </button>
-
-  <button class="mode-card mode-friends" onclick="openPopup('الأصدقاء','قريباً يمكنك إضافة أصدقائك وإرسال دعوات لمباراة شطرنج.')">
-   <span>👥</span>
-   <div><b>الأصدقاء</b><small>العب مع أصحابك</small></div>
-  </button>
-
-  <button class="mode-card mode-tournament" onclick="openPopup('البطولات','ستتمكن لاحقاً من دخول بطولات الوحوش والتنافس على الجوائز.')">
-   <span>🏆</span>
-   <div><b>البطولات</b><small>نافس الأبطال</small></div>
-  </button>
-
- </div>
-
- <div class="section-title">الخدمات</div>
-
- <div class="quick-grid">
-  <button class="quick-item" onclick="openPopup('المتجر','هنا ستتمكن من شراء أشكال الوحوش والقطع والديكورات.')">
-   <span>🛒</span><small>المتجر</small>
-  </button>
-
-  <button class="quick-item" onclick="openPopup('المهام اليومية','أكمل المباريات واجمع النقاط وافتح المكافآت.')">
-   <span>🎯</span><small>المهام</small>
-  </button>
-
-  <button class="quick-item" onclick="openPopup('التصنيف','قريباً ترتيب أفضل لاعبي الشطرنج.')">
-   <span>🥇</span><small>التصنيف</small>
-  </button>
-
-  <button class="quick-item" onclick="openPopup('الإعدادات','إعدادات الصوت واللغة والحساب ستتوفر هنا.')">
-   <span>⚙️</span><small>الإعدادات</small>
-  </button>
- </div>
-
- <div class="daily">
+<header class="header">
+ <div class="user">
+  <div class="avatar">👹</div>
   <div>
-   <b>🎁 المكافأة اليومية</b>
-   <small>احصل على عملات مجانية كل يوم</small>
+   <div class="name">محارب الوحوش</div>
+   <div class="level">⭐ المستوى 1</div>
   </div>
-  <button onclick="dailyReward()">استلام</button>
+ </div>
+ <div class="money">
+  <div>🪙 <b id="coins">1000</b></div>
+  <div>💎 <b id="gems">10</b></div>
+ </div>
+</header>
+
+<section class="hero">
+ <div class="hero-title">
+  <small>MONSTER CHESS</small>
+  <h1>شطرنج الوحوش<br>3D</h1>
+  <p>اصنع أسطورتك واهزم أعداءك!</p>
  </div>
 
- <div class="difficulty">
-  <span>🤖 مستوى الكمبيوتر</span>
-  <select id="level">
-   <option value="easy">🟢 سهل</option>
-   <option value="hard" selected>🔴 صعب</option>
-  </select>
+ <div class="monster">🐉</div>
+
+ <div class="chess-platform">
+  <span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span>
  </div>
 
- <div style="text-align:center;font-size:10px;color:#c6eaff;margin:5px">
-  MONSTER CHESS © 2026
+ <button class="play" onclick="startGame()">⚔️ ابدأ المعركة</button>
+</section>
+
+<section class="section">
+ <div class="section-head">
+  <h2>🎮 <span>أنماط اللعب</span></h2>
+  <small>اختر معركتك</small>
  </div>
 
- <div class="bottom-nav">
-  <button class="active" onclick="navHome()">🏠<small>الرئيسية</small></button>
-  <button onclick="openPopup('الأصدقاء','قريباً: قائمة أصدقائك.')">👥<small>الأصدقاء</small></button>
-  <button onclick="openPopup('البطولات','قريباً: البطولات العالمية.')">🏆<small>البطولات</small></button>
-  <button onclick="openPopup('حسابي','حساب اللاعب التجريبي - المستوى الأول.')">👤<small>حسابي</small></button>
+ <div class="modes">
+  <button class="mode" onclick="startGame()">
+   <span class="mode-tag">POPULAR</span>
+   <span class="mode-icon">🤖</span>
+   <h3>اللعب ضد الكمبيوتر</h3>
+   <p>تحدى الذكاء الاصطناعي</p>
+  </button>
+
+  <button class="mode" onclick="showPopup('🌐','اللعب أونلاين','سيتم تفعيل اللعب مع الأصدقاء عبر الإنترنت في التحديث القادم.')">
+   <span class="mode-tag">ONLINE</span>
+   <span class="mode-icon">⚔️</span>
+   <h3>اللعب أونلاين</h3>
+   <p>واجه لاعبين من العالم</p>
+  </button>
+
+  <button class="mode" onclick="showPopup('👥','اللعب مع صديق','سيتم إضافة غرف اللعب الخاصة قريباً.')">
+   <span class="mode-tag">FRIENDS</span>
+   <span class="mode-icon">🛡️</span>
+   <h3>العب مع صديق</h3>
+   <p>أنشئ معركة خاصة</p>
+  </button>
+
+  <button class="mode" onclick="showPopup('🏆','البطولات','استعد للبطولات والتحديات القادمة.')">
+   <span class="mode-tag">EVENT</span>
+   <span class="mode-icon">👑</span>
+   <h3>البطولات</h3>
+   <p>نافس على لقب الملك</p>
+  </button>
  </div>
+</section>
+
+<section class="section">
+ <div class="section-head">
+  <h2>🏅 <span>المهام والمكافآت</span></h2>
+  <small>احصل على الجوائز</small>
+ </div>
+
+ <div class="event">
+  <div class="event-icon">🎁</div>
+  <div class="event-info">
+   <b>الهدية اليومية</b>
+   <p>احصل على 100 قطعة ذهبية</p>
+  </div>
+  <button onclick="dailyGift()">استلام</button>
+ </div>
+
+ <div class="event">
+  <div class="event-icon">🔥</div>
+  <div class="event-info">
+   <b>تحدي المحارب</b>
+   <p>العب مباراة وارفع مستواك</p>
+  </div>
+  <button onclick="startGame()">العب الآن</button>
+ </div>
+</section>
+
+<section class="section">
+ <div class="section-head">
+  <h2>✨ <span>المزيد</span></h2>
+ </div>
+ <div class="modes">
+  <button class="mode" onclick="showPopup('🛒','المتجر','هنا سنضيف متجر الوحوش والأسلحة والأشكال.')">
+   <span class="mode-icon">🛒</span>
+   <h3>المتجر</h3><p>اكتشف المظاهر الجديدة</p>
+  </button>
+  <button class="mode" onclick="showPopup('⚙️','الإعدادات','إعدادات الصوت واللغة والتحكم ستضاف هنا.')">
+   <span class="mode-icon">⚙️</span>
+   <h3>الإعدادات</h3><p>خصص تجربتك</p>
+  </button>
+ </div>
+</section>
 
 </div>
 
-<!-- POPUP -->
+<nav class="bottom">
+ <button class="nav active" onclick="setTab(this,'الرئيسية')">
+  <span>🏠</span>الرئيسية
+ </button>
+ <button class="nav" onclick="showPopup('🏆','الترتيب','قائمة أفضل اللاعبين ستضاف لاحقاً.')">
+  <span>🏆</span>الترتيب
+ </button>
+ <button class="nav" onclick="showPopup('🛒','المتجر','متجر الوحوش قادم قريباً.')">
+  <span>🛒</span>المتجر
+ </button>
+ <button class="nav" onclick="showPopup('👤','حسابي','ملف اللاعب الشخصي.')">
+  <span>👤</span>حسابي
+ </button>
+</nav>
 
-<div id="popup">
- <div class="popup-box">
-  <h2 id="popup-title">العنوان</h2>
-  <p id="popup-text">التفاصيل</p>
-  <button onclick="closePopup()">حسناً</button>
+<div class="overlay" id="overlay">
+ <div class="popup">
+  <div class="popup-icon" id="popIcon">👑</div>
+  <h2 id="popTitle">العنوان</h2>
+  <p id="popText"></p>
+  <button class="close" onclick="closePopup()">حسناً</button>
  </div>
 </div>
 
-<!-- GAME -->
+<script>
+let coins=Number(localStorage.getItem("monster_coins")||1000);
+let gifted=localStorage.getItem("monster_daily_gift");
+document.getElementById("coins").textContent=coins;
 
-<div id="game-container">
-
- <div id="game"></div>
- <div id="loading">🐉 جاري تحضير ساحة المعركة...</div>
-
- <div id="ui-layer">
-  <div id="status">جاهز</div>
-  <div class="controls">
-   <button class="icon-btn" onclick="newGame()">🔄</button>
-   <button class="icon-btn" onclick="undoMove()">↩️</button>
-   <button class="icon-btn" onclick="goMenu()">🏠</button>
-  </div>
- </div>
-
- <div id="promotion">
-  <h3>اختر ترقية الجندي</h3>
-  <div class="promo-btns">
-   <button onclick="promote('q')">♕</button>
-   <button onclick="promote('r')">♖</button>
-   <button onclick="promote('b')">♗</button>
-   <button onclick="promote('n')">♘</button>
-  </div>
- </div>
-
-</div>
-
-<script type="importmap">
-{
- "imports":{
-  "three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-  "OrbitControls":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js",
-  "chess":"https://cdn.jsdelivr.net/npm/chess.js@1.4.0/dist/esm/chess.js"
- }
+function startGame(){
+ window.location.href="game.html";
 }
-</script>
 
-<script type="module">
-
-import * as T from "three";
-import {OrbitControls} from "OrbitControls";
-import {Chess} from "chess";
-
-const $=id=>document.getElementById(id);
-const chess=new Chess();
-const files="abcdefgh";
-
-let selectedSquare=null;
-let thinking=false;
-let pendingPromotion=null;
-let computerTimer=null;
-let touchStart=null;
-
-window.openPopup=function(title,message){
- $("popup-title").textContent=title;
- $("popup-text").textContent=message;
- $("popup").style.display="flex";
-};
-
-window.closePopup=function(){
- $("popup").style.display="none";
-};
-
-window.navHome=function(){
- $("main-menu").scrollTo({top:0,behavior:"smooth"});
-};
-
-window.dailyReward=function(){
-
- const today=new Date().toDateString();
- const last=localStorage.getItem("monster_daily");
-
- if(last===today){
-  openPopup("المكافأة اليومية","لقد استلمت مكافأتك اليوم. عد غداً!");
+function showPopup(icon,title,message){
+ document.getElementById("popIcon").textContent=icon;
+ document.getElementById("popTitle").textContent=title;
+ document.getElementById("popText").textContent=message;
+ document.getElementById("overlay").classList.add("show");
+}
+function closePopup(){
+ document.getElementById("overlay").classList.remove("show");
+}
+function dailyGift(){
+ if(gifted){
+  showPopup("🎁","استلمت هديتك","لقد استلمت هديتك اليومية سابقاً.");
   return;
  }
-
- let coins=Number(localStorage.getItem("monster_coins")||1000);
  coins+=100;
+ gifted="yes";
  localStorage.setItem("monster_coins",coins);
- localStorage.setItem("monster_daily",today);
- $("coins").textContent=coins;
-
- openPopup("مبروك! 🎉","حصلت على 100 عملة ذهبية.");
-};
-
-let savedCoins=Number(localStorage.getItem("monster_coins")||1000);
-$("coins").textContent=savedCoins;
-
-// ================= 3D WORLD =================
-
-const scene=new T.Scene();
-scene.background=new T.Color(0x87CEEB);
-scene.fog=new T.Fog(0x87CEEB,20,55);
-
-const camera=new T.PerspectiveCamera(45,1,.1,100);
-camera.position.set(0,12,13);
-
-const renderer=new T.WebGLRenderer({
- antialias:true,
- powerPreference:"high-performance"
-});
-renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
-renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=T.PCFSoftShadowMap;
-renderer.outputColorSpace=T.SRGBColorSpace;
-renderer.toneMapping=T.ACESFilmicToneMapping;
-
-$("game").appendChild(renderer.domElement);
-
-const controls=new OrbitControls(camera,renderer.domElement);
-controls.target.set(0,0,0);
-controls.enableDamping=true;
-controls.dampingFactor=.06;
-controls.enablePan=false;
-controls.minDistance=9;
-controls.maxDistance=18;
-controls.minPolarAngle=Math.PI/4;
-controls.maxPolarAngle=Math.PI/2.2;
-controls.update();
-
-scene.add(new T.HemisphereLight(0xffffff,0x456044,1.8));
-
-const sun=new T.DirectionalLight(0xfff0d0,2.5);
-sun.position.set(10,20,10);
-sun.castShadow=true;
-sun.shadow.mapSize.set(1024,1024);
-sun.shadow.camera.left=-12;
-sun.shadow.camera.right=12;
-sun.shadow.camera.top=12;
-sun.shadow.camera.bottom=-12;
-scene.add(sun);
-
-// الأرضية
-const ground=new T.Mesh(
- new T.PlaneGeometry(200,200),
- new T.MeshStandardMaterial({color:0x267b43,roughness:1})
-);
-ground.rotation.x=-Math.PI/2;
-ground.position.y=-.6;
-ground.receiveShadow=true;
-scene.add(ground);
-
-// الأشجار
-function createTree(x,z,s=1){
-
- const tree=new T.Group();
-
- const trunk=new T.Mesh(
-  new T.CylinderGeometry(.3*s,.45*s,2*s,8),
-  new T.MeshStandardMaterial({color:0x70452b})
- );
- trunk.position.y=s;
- trunk.castShadow=true;
- tree.add(trunk);
-
- const colors=[0x176b29,0x29a344,0x55bb39];
-
- for(let i=0;i<3;i++){
-
-  const leaves=new T.Mesh(
-   new T.ConeGeometry((1.5-i*.3)*s,(2-i*.15)*s,8),
-   new T.MeshStandardMaterial({color:colors[i]})
-  );
-
-  leaves.position.y=(2.5+i*1.1)*s;
-  leaves.castShadow=true;
-  tree.add(leaves);
- }
-
- tree.position.set(x,-.5,z);
- tree.rotation.y=Math.random()*6;
- scene.add(tree);
+ localStorage.setItem("monster_daily_gift","yes");
+ document.getElementById("coins").textContent=coins;
+ showPopup("🎉","مبروك!","حصلت على 100 قطعة ذهبية.");
 }
-
-for(let i=0;i<40;i++){
- const a=Math.random()*Math.PI*2;
- const r=9+Math.random()*19;
- createTree(Math.cos(a)*r,Math.sin(a)*r,.7+Math.random()*.6);
+function setTab(button,name){
+ document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
+ button.classList.add("active");
+ if(name!=="الرئيسية")showPopup("👑",name,"هذه الصفحة سنطورها في المراحل القادمة.");
 }
-
-// الرقعة
-const boardGroup=new T.Group();
-scene.add(boardGroup);
-
-const border=new T.Mesh(
- new T.BoxGeometry(9.2,.4,9.2),
- new T.MeshStandardMaterial({color:0x573725,roughness:.4})
-);
-border.position.y=-.2;
-border.receiveShadow=true;
-border.castShadow=true;
-boardGroup.add(border);
-
-const lightMat=new T.MeshStandardMaterial({color:0xe9d3a2,roughness:.4});
-const darkMat=new T.MeshStandardMaterial({color:0x563b2c,roughness:.4});
-
-const squares=[];
-
-for(let r=0;r<8;r++){
- for(let f=0;f<8;f++){
-
-  const square=new T.Mesh(
-   new T.BoxGeometry(1,.1,1),
-   (r+f)%2?darkMat:lightMat
-  );
-
-  square.position.set(f-3.5,0,r-3.5);
-  square.receiveShadow=true;
-  square.userData.square=files[f]+(8-r);
-  squares.push(square);
-  boardGroup.add(square);
- }
-}
-
-// المواد
-const pieceMaterials={
- w:new T.MeshStandardMaterial({
-  color:0xffe7a0,metalness:.45,roughness:.22
- }),
- b:new T.MeshStandardMaterial({
-  color:0x29233c,metalness:.6,roughness:.24
- })
-};
-
-const goldMat=new T.MeshStandardMaterial({
- color:0xffc52c,metalness:.7,roughness:.2
-});
-
-const redMat=new T.MeshStandardMaterial({
- color:0xa51e2d,metalness:.5,roughness:.3
-});
-
-const piecesGroup=new T.Group();
-scene.add(piecesGroup);
-
-const marksGroup=new T.Group();
-scene.add(marksGroup);
-
-// ================= PIECES =================
-
-function createModernPiece(type,color){
-
- const g=new T.Group();
- const mat=pieceMaterials[color];
-
- function part(geo,y,sx=1,sy=1,sz=1,material=mat){
-
-  const m=new T.Mesh(geo,material);
-  m.position.y=y;
-  m.scale.set(sx,sy,sz);
-  m.castShadow=true;
-  m.receiveShadow=true;
-  g.add(m);
-  return m;
- }
-
- part(new T.CylinderGeometry(.4,.46,.15,32),.075);
- part(new T.CylinderGeometry(.3,.4,.1,32),.2,1,1,1,goldMat);
-
- switch(type){
-
- case "p":
-  part(new T.CylinderGeometry(.14,.25,.5,24),.5);
-  part(new T.SphereGeometry(.2,24,16),.85);
-  part(new T.ConeGeometry(.07,.22,8),1.08,1,1,1,goldMat);
-  break;
-
- case "r":
-  part(new T.CylinderGeometry(.25,.32,.65,24),.55);
-  part(new T.CylinderGeometry(.37,.37,.18,24),.95);
-  for(let i=0;i<4;i++){
-   const a=i*Math.PI/2;
-   const m=part(new T.BoxGeometry(.15,.18,.15),1.1);
-   m.position.x=Math.cos(a)*.25;
-   m.position.z=Math.sin(a)*.25;
-  }
-  break;
-
- case "n":
-  part(new T.CylinderGeometry(.16,.28,.55,24),.5);
-  const head=part(new T.BoxGeometry(.32,.43,.24),.95);
-  head.rotation.x=-.4;
-  head.position.z=.12;
-  part(new T.ConeGeometry(.07,.25,8),1.23);
-  part(new T.ConeGeometry(.07,.25,8),1.23).position.x=.18;
-  part(new T.SphereGeometry(.06,12,12),.95,1,1,1,redMat).position.z=.25;
-  break;
-
- case "b":
-  part(new T.CylinderGeometry(.16,.27,.6,24),.5);
-  part(new T.SphereGeometry(.22,24,16),.85);
-  part(new T.ConeGeometry(.24,.5,24),1.2,1,1,1,goldMat);
-  part(new T.SphereGeometry(.08,16,12),1.5,1,1,1,redMat);
-  break;
-
- case "q":
-  part(new T.CylinderGeometry(.16,.28,.7,24),.6);
-  part(new T.TorusGeometry(.23,.06,12,32),1);
-  part(new T.SphereGeometry(.14,20,16),1.15);
-  for(let i=0;i<6;i++){
-   const a=i*Math.PI/3;
-   const m=part(new T.ConeGeometry(.055,.22,8),1.27);
-   m.position.x=Math.cos(a)*.22;
-   m.position.z=Math.sin(a)*.22;
-  }
-  part(new T.SphereGeometry(.09,16,12),1.42,1,1,1,goldMat);
-  break;
-
- case "k":
-  part(new T.CylinderGeometry(.16,.28,.8,24),.65);
-  part(new T.TorusGeometry(.23,.06,12,32),1.1);
-  part(new T.BoxGeometry(.09,.4,.09),1.38,1,1,1,goldMat);
-  part(new T.BoxGeometry(.27,.09,.09),1.43,1,1,1,goldMat);
-  part(new T.SphereGeometry(.1,16,12),1.65,1,1,1,redMat);
-  break;
- }
-
- return g;
-}
-
-function getSquarePos(sq){
- const f=files.indexOf(sq[0]);
- const r=8-Number(sq[1]);
- return {x:f-3.5,z:r-3.5};
-}
-
-// رسم الرقعة
-function drawBoard(){
-
- piecesGroup.clear();
-
- const board=chess.board();
-
- board.forEach((row,r)=>{
-  row.forEach((piece,f)=
+</script>
+</body>
+</html>
