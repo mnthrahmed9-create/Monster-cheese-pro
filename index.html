@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>الواجهة الرئيسية - شطرنج الوحوش 3D</title>
+    <title>شطرنج الوحوش 3D - القائمة الرئيسية</title>
     <style>
         * {
             margin: 0;
@@ -26,64 +26,66 @@
             width: 100%;
             height: 100%;
             
-            /* ⚠️ اسم الصورة هنا: تأكد أن الصورة المرفوعة اسمها menu.jpg */
+            /* ⚠️ تأكد أن اسم الصورة هنا يطابق اسم الصورة المرفوعة على GitHub */
             background-image: url('menu.jpg'); 
             
-            background-size: 100% 100%; /* تمدد الصورة لتملأ الشاشة */
+            background-size: 100% 100%; /* تمدد الصورة لتملأ الشاشة بالكامل */
             background-position: center;
             background-repeat: no-repeat;
         }
 
         /* =========================================
-           الأزرار الشفافة (بدون خطوط حمراء)
+           الأزرار الشفافة
            ========================================= */
         .hotspot {
             position: absolute;
-            background: transparent; /* شفافة 100% */
+            background: transparent; /* شفافة */
             border: none;
             cursor: pointer;
-            border-radius: 10px;
+            border-radius: 12px;
             z-index: 10;
             transition: background 0.1s;
         }
 
-        /* تأثير وميض خفيف عند الضغط ليعرف المستخدم أنه ضغط */
+        /* تأثير وميض خفيف جداً عند الضغط ليعرف المستخدم أنه ضغط على الزر */
         .hotspot:active {
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* --- إحداثيات الأزرار المضبوطة --- */
+        /* =========================================
+           إحداثيات الأزرار (مضبوطة على الصورة الجديدة)
+           ========================================= */
         
-        /* الشريط العلوي */
-        .btn-profile { top: 1.5%; left: 2%; width: 32%; height: 7.5%; } /* الملف الشخصي */
-        .btn-gold-plus { top: 1.5%; left: 54.5%; width: 5%; height: 3.5%; border-radius: 50%; } /* زر + الذهب */
-        .btn-gem-plus { top: 1.5%; left: 76%; width: 5%; height: 3.5%; border-radius: 50%; } /* زر + الجواهر */
-        .btn-settings { top: 1.5%; left: 84.5%; width: 6%; height: 4%; border-radius: 50%; } /* الإعدادات */
-        .btn-mail { top: 1.5%; right: 2.5%; width: 7.5%; height: 4%; border-radius: 10px; } /* الرسائل */
+        /* --- الشريط العلوي --- */
+        .btn-profile { top: 2%; left: 2%; width: 35%; height: 7.5%; } 
+        .btn-gold-plus { top: 2.5%; left: 55%; width: 5%; height: 3.5%; border-radius: 50%; } 
+        .btn-gem-plus { top: 2.5%; left: 76%; width: 5%; height: 3.5%; border-radius: 50%; } 
+        .btn-settings { top: 2%; left: 84%; width: 6.5%; height: 4%; border-radius: 50%; } 
+        .btn-mail { top: 2%; right: 2%; width: 7.5%; height: 4%; border-radius: 10px; } 
 
-        /* القائمة اليسرى */
-        .btn-quests { top: 33.5%; left: 2%; width: 18%; height: 6%; } /* المهام اليومية */
-        .btn-achievements { top: 41%; left: 2%; width: 18%; height: 6%; } /* الإنجازات */
-        .btn-rewards { top: 48.5%; left: 2%; width: 18%; height: 6%; } /* مكافآت خاصة */
-        .btn-ranks { top: 56.5%; left: 2%; width: 18%; height: 6%; } /* رتب والألقاب */
+        /* --- القائمة اليسرى --- */
+        .btn-quests { top: 33.5%; left: 2%; width: 18%; height: 6.5%; } 
+        .btn-achievements { top: 41%; left: 2%; width: 18%; height: 6.5%; } 
+        .btn-rewards { top: 48.5%; left: 2%; width: 18%; height: 6.5%; } 
+        .btn-ranks { top: 56%; left: 2%; width: 18%; height: 6.5%; } 
 
-        /* صندوق المكافآت اليومية (اليمين) */
-        .btn-daily-chest { top: 33.5%; right: 2%; width: 28%; height: 19.5%; } /* صندوق المكافآت */
-        .btn-streak { top: 54%; right: 2%; width: 28%; height: 5%; } /* تاجات الأيام 1, 2, 3 */
+        /* --- صندوق المكافآت اليومية (اليمين) --- */
+        .btn-daily-chest { top: 33.5%; right: 2%; width: 28%; height: 20%; } 
+        .btn-streak { top: 54.5%; right: 2%; width: 28%; height: 5%; } 
 
-        /* الزر الرئيسي الكبير (ابدأ المواجهة) */
-        .btn-start { bottom: 28.5%; left: 22%; width: 56%; height: 7.5%; } 
+        /* --- الزر الرئيسي الكبير (ابدأ المواجهة) --- */
+        .btn-start { bottom: 26%; left: 20%; width: 60%; height: 8%; } 
 
-        /* الأزرار الثلاثة السفلية */
-        .btn-online { bottom: 12.5%; left: 2.5%; width: 29%; height: 8.5%; } /* اللعب أونلاين */
-        .btn-ai { bottom: 12.5%; left: 35.5%; width: 29%; height: 8.5%; } /* اللعب ضد الكمبيوتر */
-        .btn-challenges { bottom: 12.5%; right: 2.5%; width: 29%; height: 8.5%; } /* التحديات الكبرى */
+        /* --- الأزرار الثلاثة السفلية --- */
+        .btn-online { bottom: 13%; left: 2.5%; width: 29%; height: 8%; } 
+        .btn-ai { bottom: 13%; left: 35.5%; width: 29%; height: 8%; } 
+        .btn-challenges { bottom: 13%; right: 2.5%; width: 29%; height: 8%; } 
 
-        /* شريط التنقل السفلي */
-        .nav-store { bottom: 0; left: 0; width: 25%; height: 9.5%; } /* المتجر */
-        .nav-inventory { bottom: 0; left: 25%; width: 25%; height: 9.5%; } /* المخزون */
-        .nav-account { bottom: 0; left: 50%; width: 25%; height: 9.5%; } /* حسابي */
-        .nav-home { bottom: 0; left: 75%; width: 25%; height: 9.5%; } /* الرئيسية */
+        /* --- شريط التنقل السفلي --- */
+        .nav-store { bottom: 0; left: 0; width: 25%; height: 9%; } 
+        .nav-inventory { bottom: 0; left: 25%; width: 25%; height: 9%; } 
+        .nav-account { bottom: 0; left: 50%; width: 25%; height: 9%; } 
+        .nav-home { bottom: 0; left: 75%; width: 25%; height: 9%; } 
 
     </style>
 </head>
