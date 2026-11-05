@@ -1,443 +1,365 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Monster Chess 3D</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>شطرنج الوحوش 3D</title>
+    <!-- خط عربي مطابق للصورة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Cairo', sans-serif;
+        }
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+        body {
+            background-color: #05020a;
+            color: white;
+            overflow-x: hidden;
+            /* ⚠️ هنا رابط صورة الخلفية (التنين والكهف). يمكنك استبداله برابط صورتك */
+            background-image: 
+                linear-gradient(to bottom, rgba(10, 5, 20, 0.3) 0%, rgba(10, 5, 20, 0.9) 70%, #0a0514 100%),
+                url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding-bottom: 80px; /* مساحة لشريط التنقل السفلي */
+        }
 
-:root{
- --gold:#ffd477;
- --gold2:#a96d20;
- --bg:#080d18;
- --panel:#17243a;
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{
- margin:0;
- background:
- radial-gradient(ellipse at 50% 5%,#35486a 0%,transparent 48%),
- linear-gradient(180deg,#111b2d,#080d18 75%);
- color:#fff;
- font-family:Cairo,sans-serif;
- min-height:100vh;
- overflow-x:hidden;
-}
-button{font-family:inherit;cursor:pointer}
-.app{max-width:500px;margin:auto;padding-bottom:95px}
+        /* =========================================
+           الجزء العلوي (العنوان والأزرار)
+           ========================================= */
+        .top-section {
+            text-align: center;
+            padding: 50px 20px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
 
-/* HEADER */
-.header{
- display:flex;justify-content:space-between;align-items:center;
- padding:13px 15px;
- background:#09111feF;
- border-bottom:1px solid #d5a64b44;
- box-shadow:0 7px 25px #0008;
- position:relative;z-index:5;
-}
-.user{display:flex;align-items:center;gap:10px}
-.avatar{
- width:48px;height:48px;border-radius:16px;
- background:linear-gradient(145deg,#ffdf91,#8c4c1d);
- display:grid;place-items:center;font-size:29px;
- border:2px solid var(--gold);
- box-shadow:inset 0 3px 8px #fff8,0 6px 15px #0009;
-}
-.name{font-size:13px;font-weight:900}
-.level{font-size:10px;color:var(--gold)}
-.money{display:flex;gap:6px}
-.money div{
- background:linear-gradient(145deg,#263752,#101a2c);
- border:1px solid #ffffff22;
- border-radius:12px;padding:6px 9px;
- font-size:12px;box-shadow:0 4px 0 #050a12;
-}
+        /* العنوان الرئيسي */
+        .title-main {
+            font-size: 45px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 0 0 15px rgba(168, 85, 247, 0.8), 0 5px 10px rgba(0,0,0,0.8);
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
 
-/* HERO 3D */
-.hero{
- margin:18px 13px 22px;
- height:315px;
- border-radius:25px;
- position:relative;
- overflow:hidden;
- border:1px solid #e9bd65;
- background:
- radial-gradient(circle at 50% 45%,#75502d 0%,transparent 37%),
- radial-gradient(circle at 80% 20%,#344d70,transparent 50%),
- linear-gradient(145deg,#26364d,#0a1220 75%);
- box-shadow:0 15px 0 #080d16,0 22px 35px #0009,
- inset 0 2px 8px #fff3;
- perspective:800px;
-}
-.hero:before{
- content:"";
- position:absolute;
- width:260px;height:260px;
- border:1px solid #ffd47744;border-radius:50%;
- top:25px;left:calc(50% - 130px);
- box-shadow:0 0 0 18px #ffd4770b,
- 0 0 0 38px #ffd47709,0 0 40px #d69b3b44;
-}
-.hero:after{
- content:"";
- position:absolute;
- bottom:-40px;left:8%;width:84%;height:90px;
- background:#0009;filter:blur(22px);
- border-radius:50%;
-}
-.hero-title{
- position:absolute;top:16px;right:18px;z-index:3;
-}
-.hero-title small{
- color:var(--gold);font-weight:900;
- letter-spacing:3px;font-size:10px;
-}
-.hero-title h1{
- font-size:25px;line-height:1.4;
- margin:5px 0;font-weight:900;
- text-shadow:0 3px 10px #000;
-}
-.hero-title p{font-size:10px;color:#d3d9e3;margin:0}
-.monster{
- position:absolute;
- z-index:2;
- left:50%;top:58px;
- transform:translateX(-50%);
- font-size:128px;
- filter:drop-shadow(0 15px 10px #000)
- drop-shadow(0 0 20px #ffbd4a55);
- animation:monsterFloat 4s ease-in-out infinite;
-}
-@keyframes monsterFloat{
- 0%,100%{transform:translate(-50%,0) rotate(-4deg)}
- 50%{transform:translate(-50%,-13px) rotate(4deg)}
-}
-.chess-platform{
- position:absolute;bottom:22px;left:50%;
- transform:translateX(-50%) rotateX(55deg);
- width:205px;height:100px;
- display:grid;grid-template-columns:repeat(4,1fr);
- border:4px solid #d9a64c;
- box-shadow:0 14px 0 #68451e,0 23px 20px #000;
-}
-.chess-platform span:nth-child(odd){background:#e8c47f}
-.chess-platform span:nth-child(even){background:#49331e}
-.chess-platform span:nth-child(5),
-.chess-platform span:nth-child(7){background:#49331e}
-.chess-platform span:nth-child(6),
-.chess-platform span:nth-child(8){background:#e8c47f}
+        .title-3d {
+            font-size: 38px;
+            color: #fbcfe8;
+            text-shadow: 0 0 20px rgba(219, 39, 119, 0.9), 0 5px 10px rgba(0,0,0,0.8);
+        }
 
-.play{
- position:absolute;bottom:17px;right:50%;
- transform:translateX(50%);
- z-index:4;
- width:190px;padding:12px;
- border:1px solid #fff1b0;
- border-radius:15px;
- background:linear-gradient(180deg,#ffe7a0,#d69b39 60%,#99601d);
- color:#271707;font-size:16px;font-weight:900;
- box-shadow:0 6px 0 #684318,0 12px 20px #0009,
- inset 0 2px 4px #fff;
-}
-.play:active{transform:translate(50%,4px);box-shadow:0 2px 0 #684318}
+        .title-sub {
+            font-size: 16px;
+            color: #e9d5ff;
+            margin-top: 5px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+            letter-spacing: 1px;
+        }
 
-/* TITLES */
-.section{padding:0 14px;margin-top:25px}
-.section-head{
- display:flex;justify-content:space-between;
- align-items:center;margin-bottom:13px;
-}
-.section-head h2{font-size:16px;margin:0;font-weight:900}
-.section-head h2 span{color:var(--gold)}
-.section-head small{font-size:10px;color:#aab6c9}
+        /* زر الدخول إلى الساحة (الصغير) */
+        .enter-arena {
+            margin-top: 25px;
+            background: rgba(15, 10, 25, 0.8);
+            border: 1px solid #4a2e6b;
+            color: #d8b4fe;
+            padding: 6px 25px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            cursor: pointer;
+        }
 
-/* 3D MODE CARDS */
-.modes{
- display:grid;grid-template-columns:1fr 1fr;gap:13px;
- perspective:700px;
-}
-.mode{
- min-height:140px;
- border-radius:19px;
- padding:13px;
- position:relative;
- overflow:hidden;
- background:linear-gradient(145deg,#293c59,#111c30);
- border:1px solid #ffffff28;
- box-shadow:0 7px 0 #080e19,0 13px 18px #0008,
- inset 0 2px 5px #ffffff19;
- transition:.2s;
-}
-.mode:active{transform:translateY(5px) rotateX(4deg);box-shadow:0 2px 0 #080e19}
-.mode:before{
- content:"";position:absolute;width:100px;height:100px;
- background:#ffffff09;border-radius:50%;
- left:-25px;top:-35px;
-}
-.mode-icon{
- font-size:43px;
- filter:drop-shadow(0 6px 5px #0008);
- display:block;
-}
-.mode h3{font-size:13px;margin:5px 0 0}
-.mode p{font-size:10px;color:#aebbd0;margin:2px 0}
-.mode-tag{
- position:absolute;top:12px;left:10px;
- font-size:9px;color:var(--gold);
- background:#0005;border-radius:8px;padding:4px 7px;
-}
-.mode:nth-child(2){background:linear-gradient(145deg,#4b3527,#172034)}
-.mode:nth-child(3){background:linear-gradient(145deg,#344b42,#14251f)}
-.mode:nth-child(4){background:linear-gradient(145deg,#42365a,#17182e)}
+        /* الزر الرئيسي (ابدأ المواجهة) */
+        .main-btn-wrapper {
+            margin-top: 15px;
+            width: 85%;
+            max-width: 350px;
+            background: linear-gradient(to bottom, #6b5b7a, #2d1b40);
+            padding: 3px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 10px rgba(255,255,255,0.2);
+            position: relative;
+        }
 
-/* EVENT CARDS */
-.event{
- display:flex;align-items:center;gap:12px;
- padding:12px;margin-bottom:12px;
- border-radius:17px;
- background:linear-gradient(145deg,#263650,#111b2c);
- border:1px solid #ffffff1c;
- box-shadow:0 5px 0 #080d17,0 9px 14px #0007;
-}
-.event-icon{
- width:52px;height:52px;flex-shrink:0;
- display:grid;place-items:center;font-size:28px;
- border-radius:15px;
- background:linear-gradient(145deg,#ffd77e,#82501d);
- box-shadow:inset 0 3px 5px #fff8,0 5px 9px #0008;
-}
-.event-info{flex:1}
-.event-info b{font-size:12px}
-.event-info p{font-size:10px;color:#aab6c9;margin:2px 0}
-.event button{
- border:1px solid #dcb35f;
- color:var(--gold);background:#dcb35f16;
- border-radius:10px;padding:7px 10px;font-size:10px;
-}
+        .main-btn {
+            width: 100%;
+            background: linear-gradient(to bottom, #2a153a, #11061c);
+            border: 1px solid #8b5cf6;
+            border-radius: 9px;
+            color: white;
+            padding: 15px;
+            font-size: 22px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+        }
 
-/* FOOTER */
-.bottom{
- position:fixed;bottom:0;left:0;right:0;
- max-width:500px;margin:auto;height:75px;
- background:#0b1423f5;
- border-top:1px solid #d7ae5b44;
- display:grid;grid-template-columns:repeat(4,1fr);
- z-index:10;
- backdrop-filter:blur(15px);
- padding-bottom:env(safe-area-inset-bottom);
-}
-.nav{
- background:none;border:0;color:#8997ad;
- display:flex;flex-direction:column;
- justify-content:center;align-items:center;
- gap:3px;font-size:10px;
-}
-.nav span{font-size:23px}
-.nav.active{color:var(--gold);text-shadow:0 0 12px #e9bd65}
+        .main-btn:active {
+            transform: scale(0.98);
+            background: linear-gradient(to bottom, #1f0f2b, #0a0312);
+        }
 
-/* POPUP */
-.overlay{
- display:none;position:fixed;inset:0;
- background:#000c;z-index:50;
- align-items:center;justify-content:center;padding:20px;
-}
-.overlay.show{display:flex}
-.popup{
- width:100%;max-width:360px;text-align:center;
- border:1px solid var(--gold);
- border-radius:22px;padding:23px;
- background:linear-gradient(145deg,#273954,#0b1423);
- box-shadow:0 20px 60px #000;
-}
-.popup-icon{font-size:48px}
-.popup h2{font-size:19px}
-.popup p{font-size:12px;color:#c0cada;line-height:1.9}
-.close{
- padding:9px 28px;border:0;border-radius:10px;
- background:linear-gradient(145deg,#ffdf91,#c28b34);
- color:#251707;font-weight:900;
-}
-</style>
+        .swords-icon {
+            font-size: 24px;
+            filter: drop-shadow(0 0 5px rgba(255,215,0,0.8));
+        }
+
+        /* =========================================
+           قسم أنماط اللعب (الكروت)
+           ========================================= */
+        .modes-section {
+            padding: 10px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e9d5ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title span {
+            font-size: 24px;
+        }
+
+        .section-sub {
+            font-size: 13px;
+            color: #a78bfa;
+        }
+
+        /* شبكة الكروت */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .card {
+            background: rgba(20, 10, 35, 0.85);
+            border: 2px solid #4c1d95;
+            border-radius: 12px;
+            padding: 10px;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 0 20px rgba(76, 29, 149, 0.3);
+            cursor: pointer;
+            transition: transform 0.1s;
+            overflow: hidden;
+        }
+
+        .card:active {
+            transform: scale(0.95);
+        }
+
+        /* شارة الكرت */
+        .badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #7e22ce;
+            color: #e9d5ff;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        /* صورة/أيقونة الكرت */
+        .card-img {
+            font-size: 55px;
+            margin: 20px 0 10px;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8));
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .card-desc {
+            font-size: 11px;
+            color: #c4b5fd;
+        }
+
+        /* ألوان الكروت المخصصة (لتطابق الصورة) */
+        .card.online { border-color: #4338ca; background: linear-gradient(to bottom, rgba(30, 27, 75, 0.9), rgba(15, 10, 35, 0.9)); }
+        .card.popular { border-color: #7f1d1d; background: linear-gradient(to bottom, rgba(69, 10, 10, 0.9), rgba(15, 10, 35, 0.9)); }
+        .card.event { border-color: #6b21a8; background: linear-gradient(to bottom, rgba(59, 7, 100, 0.9), rgba(15, 10, 35, 0.9)); }
+        .card.friends { border-color: #854d0e; background: linear-gradient(to bottom, rgba(66, 32, 6, 0.9), rgba(15, 10, 35, 0.9)); }
+
+        /* =========================================
+           شريط التنقل السفلي
+           ========================================= */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(10, 5, 20, 0.95);
+            border-top: 2px solid #3b1d60;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #6b7280;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+            filter: grayscale(1) opacity(0.7);
+        }
+
+        /* حالة شريط التنقل النشط (الرئيسية) */
+        .nav-item.active {
+            color: #d8b4fe;
+        }
+
+        .nav-item.active .nav-icon {
+            filter: grayscale(0) opacity(1) drop-shadow(0 0 10px #a855f7);
+        }
+        
+        /* زخرفة الأيقونة النشطة */
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            bottom: 60px;
+            width: 30px;
+            height: 3px;
+            background: #a855f7;
+            box-shadow: 0 0 10px #a855f7;
+            border-radius: 5px;
+        }
+
+    </style>
 </head>
-
 <body>
-<div class="app">
 
-<header class="header">
- <div class="user">
-  <div class="avatar">👹</div>
-  <div>
-   <div class="name">محارب الوحوش</div>
-   <div class="level">⭐ المستوى 1</div>
-  </div>
- </div>
- <div class="money">
-  <div>🪙 <b id="coins">1000</b></div>
-  <div>💎 <b id="gems">10</b></div>
- </div>
-</header>
+    <!-- الجزء العلوي: العنوان والأزرار -->
+    <div class="top-section">
+        <div class="title-main">شطرنج الوحوش <span class="title-3d">3D</span></div>
+        <div class="title-sub">ابدأ الأسطورة</div>
 
-<section class="hero">
- <div class="hero-title">
-  <small>MONSTER CHESS</small>
-  <h1>شطرنج الوحوش<br>3D</h1>
-  <p>اصنع أسطورتك واهزم أعداءك!</p>
- </div>
+        <div class="enter-arena">الدخول إلى الساحة</div>
 
- <div class="monster">🐉</div>
+        <div class="main-btn-wrapper">
+            <!-- هذا الزر ينقلك لملف اللعبة -->
+            <button class="main-btn" onclick="goToGame()">
+                <span class="swords-icon">⚔️</span>
+                ابدأ المواجهة
+            </button>
+        </div>
+    </div>
 
- <div class="chess-platform">
-  <span></span><span></span><span></span><span></span>
-  <span></span><span></span><span></span><span></span>
-  <span></span><span></span><span></span><span></span>
-  <span></span><span></span><span></span><span></span>
- </div>
+    <!-- قسم أنماط اللعب -->
+    <div class="modes-section">
+        <div class="section-header">
+            <div class="section-title"><span>🎮</span> أنماط اللعب</div>
+            <div class="section-sub">اختر معركتك</div>
+        </div>
 
- <button class="play" onclick="startGame()">⚔️ ابدأ المعركة</button>
-</section>
+        <div class="cards-grid">
+            <!-- الكرت الأول -->
+            <div class="card online">
+                <div class="badge">ONLINE</div>
+                <div class="card-img">🪄</div>
+                <div class="card-title">الاتصال بالسحر</div>
+                <div class="card-desc">واجه لاعبين من العالم</div>
+            </div>
 
-<section class="section">
- <div class="section-head">
-  <h2>🎮 <span>أنماط اللعب</span></h2>
-  <small>اختر معركتك</small>
- </div>
+            <!-- الكرت الثاني -->
+            <div class="card popular">
+                <div class="badge">POPULAR</div>
+                <div class="card-img">🤖</div>
+                <div class="card-title">الحكمة القديمة</div>
+                <div class="card-desc">تحدى الذكاء الاصطناعي</div>
+            </div>
 
- <div class="modes">
-  <button class="mode" onclick="startGame()">
-   <span class="mode-tag">POPULAR</span>
-   <span class="mode-icon">🤖</span>
-   <h3>اللعب ضد الكمبيوتر</h3>
-   <p>تحدى الذكاء الاصطناعي</p>
-  </button>
+            <!-- الكرت الثالث -->
+            <div class="card event">
+                <div class="badge">EVENT</div>
+                <div class="card-img">🔮</div>
+                <div class="card-title">تحديات كبرى</div>
+                <div class="card-desc">أحداث ومكافآت نادرة</div>
+            </div>
 
-  <button class="mode" onclick="showPopup('🌐','اللعب أونلاين','سيتم تفعيل اللعب مع الأصدقاء عبر الإنترنت في التحديث القادم.')">
-   <span class="mode-tag">ONLINE</span>
-   <span class="mode-icon">⚔️</span>
-   <h3>اللعب أونلاين</h3>
-   <p>واجه لاعبين من العالم</p>
-  </button>
+            <!-- الكرت الرابع -->
+            <div class="card friends">
+                <div class="badge">FRIENDS</div>
+                <div class="card-img">📜</div>
+                <div class="card-title">تحالف السحرة</div>
+                <div class="card-desc">العب مع أصدقائك</div>
+            </div>
+        </div>
+    </div>
 
-  <button class="mode" onclick="showPopup('👥','اللعب مع صديق','سيتم إضافة غرف اللعب الخاصة قريباً.')">
-   <span class="mode-tag">FRIENDS</span>
-   <span class="mode-icon">🛡️</span>
-   <h3>العب مع صديق</h3>
-   <p>أنشئ معركة خاصة</p>
-  </button>
+    <!-- شريط التنقل السفلي -->
+    <div class="bottom-nav">
+        <div class="nav-item">
+            <div class="nav-icon">👤</div>
+            <span>حسابي</span>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">📜</div>
+            <span>المتجر</span>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">🏆</div>
+            <span>التصنيف</span>
+        </div>
+        <div class="nav-item active">
+            <div class="nav-icon">🏛️</div>
+            <span>الرئيسية</span>
+        </div>
+    </div>
 
-  <button class="mode" onclick="showPopup('🏆','البطولات','استعد للبطولات والتحديات القادمة.')">
-   <span class="mode-tag">EVENT</span>
-   <span class="mode-icon">👑</span>
-   <h3>البطولات</h3>
-   <p>نافس على لقب الملك</p>
-  </button>
- </div>
-</section>
-
-<section class="section">
- <div class="section-head">
-  <h2>🏅 <span>المهام والمكافآت</span></h2>
-  <small>احصل على الجوائز</small>
- </div>
-
- <div class="event">
-  <div class="event-icon">🎁</div>
-  <div class="event-info">
-   <b>الهدية اليومية</b>
-   <p>احصل على 100 قطعة ذهبية</p>
-  </div>
-  <button onclick="dailyGift()">استلام</button>
- </div>
-
- <div class="event">
-  <div class="event-icon">🔥</div>
-  <div class="event-info">
-   <b>تحدي المحارب</b>
-   <p>العب مباراة وارفع مستواك</p>
-  </div>
-  <button onclick="startGame()">العب الآن</button>
- </div>
-</section>
-
-<section class="section">
- <div class="section-head">
-  <h2>✨ <span>المزيد</span></h2>
- </div>
- <div class="modes">
-  <button class="mode" onclick="showPopup('🛒','المتجر','هنا سنضيف متجر الوحوش والأسلحة والأشكال.')">
-   <span class="mode-icon">🛒</span>
-   <h3>المتجر</h3><p>اكتشف المظاهر الجديدة</p>
-  </button>
-  <button class="mode" onclick="showPopup('⚙️','الإعدادات','إعدادات الصوت واللغة والتحكم ستضاف هنا.')">
-   <span class="mode-icon">⚙️</span>
-   <h3>الإعدادات</h3><p>خصص تجربتك</p>
-  </button>
- </div>
-</section>
-
-</div>
-
-<nav class="bottom">
- <button class="nav active" onclick="setTab(this,'الرئيسية')">
-  <span>🏠</span>الرئيسية
- </button>
- <button class="nav" onclick="showPopup('🏆','الترتيب','قائمة أفضل اللاعبين ستضاف لاحقاً.')">
-  <span>🏆</span>الترتيب
- </button>
- <button class="nav" onclick="showPopup('🛒','المتجر','متجر الوحوش قادم قريباً.')">
-  <span>🛒</span>المتجر
- </button>
- <button class="nav" onclick="showPopup('👤','حسابي','ملف اللاعب الشخصي.')">
-  <span>👤</span>حسابي
- </button>
-</nav>
-
-<div class="overlay" id="overlay">
- <div class="popup">
-  <div class="popup-icon" id="popIcon">👑</div>
-  <h2 id="popTitle">العنوان</h2>
-  <p id="popText"></p>
-  <button class="close" onclick="closePopup()">حسناً</button>
- </div>
-</div>
-
-<script>
-let coins=Number(localStorage.getItem("monster_coins")||1000);
-let gifted=localStorage.getItem("monster_daily_gift");
-document.getElementById("coins").textContent=coins;
-
-function startGame(){
- window.location.href="game.html";
-}
-
-function showPopup(icon,title,message){
- document.getElementById("popIcon").textContent=icon;
- document.getElementById("popTitle").textContent=title;
- document.getElementById("popText").textContent=message;
- document.getElementById("overlay").classList.add("show");
-}
-function closePopup(){
- document.getElementById("overlay").classList.remove("show");
-}
-function dailyGift(){
- if(gifted){
-  showPopup("🎁","استلمت هديتك","لقد استلمت هديتك اليومية سابقاً.");
-  return;
- }
- coins+=100;
- gifted="yes";
- localStorage.setItem("monster_coins",coins);
- localStorage.setItem("monster_daily_gift","yes");
- document.getElementById("coins").textContent=coins;
- showPopup("🎉","مبروك!","حصلت على 100 قطعة ذهبية.");
-}
-function setTab(button,name){
- document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
- button.classList.add("active");
- if(name!=="الرئيسية")showPopup("👑",name,"هذه الصفحة سنطورها في المراحل القادمة.");
-}
-</script>
+    <script>
+        // ⚠️ هنا مكان الربط بملف اللعبة الخاص بك
+        function goToGame() {
+            // غير "game.html" إلى اسم ملف اللعبة الذي قمت بفصله
+            window.location.href = "game.html"; 
+        }
+    </script>
 </body>
 </html>
