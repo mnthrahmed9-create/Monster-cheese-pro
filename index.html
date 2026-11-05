@@ -76,11 +76,6 @@ body { background: #000; overflow: hidden; font-family: system-ui, "Segoe UI", T
     background: #ffb300; cursor: pointer; box-shadow: 0 4px 0 #e65100;
 }
 .promo-btns button:active { transform: translateY(4px); box-shadow: none; }
-
-#loading {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    color: #fff; font-size: 24px; font-weight: bold; display: none; z-index: 50;
-}
 </style>
 </head>
 <body>
@@ -101,7 +96,6 @@ body { background: #000; overflow: hidden; font-family: system-ui, "Segoe UI", T
 <!-- حاوية اللعبة -->
 <div id="game-container">
     <div id="game"></div>
-    <div id="loading">جاري تحضير الغابة...</div>
     
     <div id="ui-layer">
         <div id="status">جاري التحميل...</div>
@@ -141,14 +135,13 @@ const $ = id => document.getElementById(id);
 
 // ---- إعدادات المشهد ----
 const scene = new T.Scene();
-// لون سماء زاهي مع ضباب للعمق
 scene.background = new T.Color(0x87CEEB); 
-scene.fog = new T.Fog(0x87CEEB, 20, 60);
+scene.fog = new T.Fog(0x87CEEB, 25, 60);
 
 const camera = new T.PerspectiveCamera(45, 1, 0.1, 100);
-camera.position.set(0, 12, 13); // زاوية ثابتة وجميلة
+camera.position.set(0, 13, 12); // زاوية ثابتة وجميلة
 
-const renderer = new T.WebGLRenderer({ antialias: true });
+const renderer = new T.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = T.PCFSoftShadowMap;
@@ -160,30 +153,30 @@ controls.target.set(0, 0, 0);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.enablePan = false; // منع تحريك الرقعة
-controls.minDistance = 9;   // أقصى تقريب
+controls.minDistance = 10;   // أقصى تقريب
 controls.maxDistance = 18;  // أقصى تبعيد
-controls.minPolarAngle = Math.PI / 4; // منع النظر من الأسفل
-controls.maxPolarAngle = Math.PI / 2.2; // منع النظر من الأعلى جداً
+controls.minPolarAngle = Math.PI / 3; // منع النظر من الأسفل
+controls.maxPolarAngle = Math.PI / 2.4; // منع النظر من الأعلى جداً
 controls.update();
 
-// ---- الإضاءة الزاهية ----
+// ---- الإضاءة ----
 const hemiLight = new T.HemisphereLight(0xffffff, 0x444444, 1.5);
 scene.add(hemiLight);
 
 const sunLight = new T.DirectionalLight(0xfff5e6, 2.5);
 sunLight.position.set(10, 20, 10);
 sunLight.castShadow = true;
-sunLight.shadow.mapSize.width = 2048;
-sunLight.shadow.mapSize.height = 2048;
+sunLight.shadow.mapSize.width = 1024;
+sunLight.shadow.mapSize.height = 1024;
 sunLight.shadow.camera.left = -10;
 sunLight.shadow.camera.right = 10;
 sunLight.shadow.camera.top = 10;
 sunLight.shadow.camera.bottom = -10;
 scene.add(sunLight);
 
-// ---- تصميم الغابة الواقعية ----
+// ---- الغابة ----
 const groundGeo = new T.PlaneGeometry(200, 200);
-const groundMat = new T.MeshStandardMaterial({ color: 0x2E8B57, roughness: 1 }); // لون عشبي زاهي
+const groundMat = new T.MeshStandardMaterial({ color: 0x2E8B57, roughness: 1 }); 
 const ground = new T.Mesh(groundGeo, groundMat);
 ground.rotation.x = -Math.PI / 2;
 ground.position.y = -0.6;
@@ -194,7 +187,6 @@ scene.add(ground);
 function createTree(x, z, scale = 1) {
     const tree = new T.Group();
     
-    // الجذع
     const trunkMat = new T.MeshStandardMaterial({ color: 0x5D4037, roughness: 0.9 });
     const trunk = new T.Mesh(new T.CylinderGeometry(0.3 * scale, 0.5 * scale, 2 * scale, 8), trunkMat);
     trunk.position.y = 1 * scale;
@@ -202,9 +194,8 @@ function createTree(x, z, scale = 1) {
     trunk.receiveShadow = true;
     tree.add(trunk);
     
-    // الأوراق (طبقات متعددة لإعطاء شكل واقعي)
-    const leafMat1 = new T.MeshStandardMaterial({ color: 0x228B22, roughness: 0.8 }); // أخضر غامق
-    const leafMat2 = new T.MeshStandardMaterial({ color: 0x32CD32, roughness: 0.8 }); // أخضر فاتح زاهي
+    const leafMat1 = new T.MeshStandardMaterial({ color: 0x228B22, roughness: 0.8 }); 
+    const leafMat2 = new T.MeshStandardMaterial({ color: 0x32CD32, roughness: 0.8 }); 
     
     const leaf1 = new T.Mesh(new T.ConeGeometry(1.5 * scale, 2 * scale, 8), leafMat1);
     leaf1.position.y = 2.5 * scale;
@@ -224,25 +215,24 @@ function createTree(x, z, scale = 1) {
     leaf3.receiveShadow = true;
     tree.add(leaf3);
 
-    tree.position.set(x, -0.5, z);
+    // تثبيت الشجرة على الأرض
+    tree.position.set(x, -0.6, z); 
     tree.rotation.y = Math.random() * Math.PI * 2;
     scene.add(tree);
 }
 
-// توزيع الأشجار حول الرقعة
-for (let i = 0; i < 80; i++) {
+for (let i = 0; i < 60; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const radius = 8 + Math.random() * 25; // توزيع بعيد عن الرقعة
+    const radius = 8 + Math.random() * 25; 
     const x = Math.cos(angle) * radius;
     const z = Math.sin(angle) * radius;
     createTree(x, z, 0.8 + Math.random() * 0.7);
 }
 
-// ---- تصميم الرقعة الثابتة ----
+// ---- الرقعة ----
 const boardGroup = new T.Group();
 scene.add(boardGroup);
 
-// الإطار الخشبي
 const borderMat = new T.MeshStandardMaterial({ color: 0x4E342E, roughness: 0.4, metalness: 0.1 });
 const border = new T.Mesh(new T.BoxGeometry(9.2, 0.4, 9.2), borderMat);
 border.position.y = -0.2;
@@ -250,40 +240,42 @@ border.receiveShadow = true;
 border.castShadow = true;
 boardGroup.add(border);
 
-// المربعات
-const lightMat = new T.MeshStandardMaterial({ color: 0xF5DEB3, roughness: 0.3 }); // خشب فاتح
-const darkMat = new T.MeshStandardMaterial({ color: 0x5D4037, roughness: 0.3 }); // خشب غامق
+const lightMat = new T.MeshStandardMaterial({ color: 0xF5DEB3, roughness: 0.3 }); 
+const darkMat = new T.MeshStandardMaterial({ color: 0x5D4037, roughness: 0.3 }); 
+const selectedMat = new T.MeshStandardMaterial({ color: 0xFFD700, roughness: 0.2 }); // مادة المربع المحدد
 const squares = [];
 
+// تصحيح منطق إنشاء المربعات
 for (let r = 0; r < 8; r++) {
     for (let f = 0; f < 8; f++) {
-        const isDark = (r + f) % 2 !== 0;
+        const rank = 8 - r; 
+        const isDark = (f + (rank - 1)) % 2 === 0; 
         const mat = isDark ? darkMat : lightMat;
+        
         const square = new T.Mesh(new T.BoxGeometry(1, 0.1, 1), mat);
         square.position.set(f - 3.5, 0, r - 3.5);
         square.receiveShadow = true;
         
-        const squareName = files[f] + (8 - r);
+        const squareName = files[f] + rank;
         square.userData.square = squareName;
         squares.push(square);
         boardGroup.add(square);
     }
 }
 
-// ---- تصميم القطع العصرية ----
+// ---- القطع ----
 const piecesGroup = new T.Group();
 scene.add(piecesGroup);
 
 const pieceMaterials = {
-    w: new T.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.2, metalness: 0.3 }), // أبيض لؤلؤي
-    b: new T.MeshStandardMaterial({ color: 0x222222, roughness: 0.4, metalness: 0.5 })  // أسود مطفي
+    w: new T.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.2, metalness: 0.3 }), 
+    b: new T.MeshStandardMaterial({ color: 0x222222, roughness: 0.4, metalness: 0.5 })  
 };
 
 function createModernPiece(type, color) {
     const g = new T.Group();
     const mat = pieceMaterials[color];
     
-    // دالة مساعدة لإضافة الأشكال
     const addPart = (geo, y, scaleX = 1, scaleY = 1, scaleZ = 1) => {
         const mesh = new T.Mesh(geo, mat);
         mesh.position.y = y;
@@ -294,19 +286,18 @@ function createModernPiece(type, color) {
         return mesh;
     };
 
-    // القاعدة المشتركة لكل القطع
+    // القاعدة
     addPart(new T.CylinderGeometry(0.4, 0.45, 0.15, 32), 0.075);
     addPart(new T.CylinderGeometry(0.3, 0.4, 0.1, 32), 0.2);
 
     switch (type) {
-        case "p": // الجندي
+        case "p": // جندي
             addPart(new T.CylinderGeometry(0.15, 0.25, 0.5, 32), 0.5);
             addPart(new T.SphereGeometry(0.2, 32, 16), 0.85);
             break;
-        case "r": // الرخ (القلعة)
+        case "r": // رخ
             addPart(new T.CylinderGeometry(0.25, 0.3, 0.6, 32), 0.55);
             addPart(new T.CylinderGeometry(0.35, 0.35, 0.15, 32), 0.9);
-            // فتحات القلعة
             for (let i = 0; i < 4; i++) {
                 const angle = (i * Math.PI) / 2;
                 const box = new T.Mesh(new T.BoxGeometry(0.15, 0.15, 0.15), mat);
@@ -315,26 +306,23 @@ function createModernPiece(type, color) {
                 g.add(box);
             }
             break;
-        case "n": // الحصان (تصميم عصري هندسي)
+        case "n": // حصان
             addPart(new T.CylinderGeometry(0.15, 0.25, 0.6, 32), 0.5);
-            // الرأس
             const head = addPart(new T.BoxGeometry(0.3, 0.4, 0.2), 0.95);
             head.rotation.x = -0.5;
             head.position.z = 0.1;
-            // الأذنين
-            addPart(new T.ConeGeometry(0.05, 0.15, 8), 1.2, 1, 1, 1).position.z = 0.15;
+            addPart(new T.ConeGeometry(0.05, 0.15, 8), 1.2).position.z = 0.15;
             break;
-        case "b": // الفيل
+        case "b": // فيل
             addPart(new T.CylinderGeometry(0.15, 0.25, 0.6, 32), 0.5);
             addPart(new T.SphereGeometry(0.25, 32, 16), 0.85);
             addPart(new T.ConeGeometry(0.15, 0.3, 32), 1.15);
             addPart(new T.SphereGeometry(0.05, 16, 16), 1.3);
             break;
-        case "q": // الملكة
+        case "q": // ملكة
             addPart(new T.CylinderGeometry(0.15, 0.25, 0.7, 32), 0.6);
             addPart(new T.TorusGeometry(0.2, 0.05, 16, 32), 0.95);
             addPart(new T.SphereGeometry(0.1, 16, 16), 1.1);
-            // التاج
             for (let i = 0; i < 6; i++) {
                 const angle = (i * Math.PI * 2) / 6;
                 const spike = new T.Mesh(new T.ConeGeometry(0.03, 0.15, 8), mat);
@@ -343,19 +331,16 @@ function createModernPiece(type, color) {
                 g.add(spike);
             }
             break;
-        case "k": // الملك
+        case "k": // ملك
             addPart(new T.CylinderGeometry(0.15, 0.25, 0.8, 32), 0.65);
             addPart(new T.TorusGeometry(0.2, 0.05, 16, 32), 1.05);
-            // الصليب
             addPart(new T.BoxGeometry(0.08, 0.3, 0.08), 1.25);
             addPart(new T.BoxGeometry(0.2, 0.08, 0.08), 1.3);
             break;
     }
-    
     return g;
 }
 
-// دالة تحديد موقع المربع
 const getSquarePos = (sq) => {
     const f = files.indexOf(sq[0]);
     const r = 8 - parseInt(sq[1]);
@@ -368,11 +353,17 @@ let pendingPromotion = null;
 const marksGroup = new T.Group();
 scene.add(marksGroup);
 
-// رسم القطع
+// تنظيف الذاكرة وإعادة رسم القطع
 function drawBoard() {
+    // مسح القطع القديمة من الذاكرة لتجنب اللاق
+    piecesGroup.children.forEach(child => {
+        child.traverse(c => {
+            if (c.geometry) c.geometry.dispose();
+        });
+    });
     piecesGroup.clear();
-    const board = chess.board();
     
+    const board = chess.board();
     board.forEach((row, r) => {
         row.forEach((piece, f) => {
             if (!piece) return;
@@ -387,28 +378,28 @@ function drawBoard() {
     });
 }
 
-// إبراز المربعات والحركات
+// تصحيح منطق إضاءة المربعات
 function highlightSquares() {
     squares.forEach(sq => {
-        const isDark = (parseInt(sq.userData.square[1]) + files.indexOf(sq.userData.square[0])) % 2 === 0;
+        const f = files.indexOf(sq.userData.square[0]);
+        const rank = parseInt(sq.userData.square[1]);
+        const isDark = (f + (rank - 1)) % 2 === 0; // نفس المنطق المستخدم في البناء
         sq.material = isDark ? darkMat : lightMat;
     });
     
     marksGroup.clear();
     if (!selectedSquare) return;
     
-    // إبراز المربع المحدد
     const selSq = squares.find(s => s.userData.square === selectedSquare);
-    if (selSq) selSq.material = new T.MeshStandardMaterial({ color: 0xFFD700, roughness: 0.2 }); // ذهبي
+    if (selSq) selSq.material = selectedMat; // استخدام مادة جاهزة بدلاً من إنشاء واحدة جديدة
 
-    // إبراز الحركات المتاحة
     const moves = chess.moves({ square: selectedSquare, verbose: true });
     moves.forEach(m => {
         const pos = getSquarePos(m.to);
         const isCapture = m.flags.includes('c') || m.flags.includes('e');
         
         const markMat = new T.MeshStandardMaterial({ 
-            color: isCapture ? 0xFF4500 : 0x00FF7F, // برتقالي للأكل، أخضر للحركة
+            color: isCapture ? 0xFF4500 : 0x00FF7F, 
             emissive: isCapture ? 0xFF4500 : 0x00FF7F,
             emissiveIntensity: 0.5,
             transparent: true, opacity: 0.8
@@ -422,7 +413,6 @@ function highlightSquares() {
     });
 }
 
-// حالة اللعبة
 function updateStatus() {
     const statusEl = $("status");
     if (chess.isCheckmate()) {
@@ -490,7 +480,7 @@ function computerMove() {
         let bestVal = -Infinity;
         for (const move of moves) {
             chess.move(move);
-            const val = minimax(2, -Infinity, Infinity, false) + Math.random(); // إضافة عشوائية بسيطة
+            const val = minimax(2, -Infinity, Infinity, false) + Math.random(); 
             chess.undo();
             if (val > bestVal) {
                 bestVal = val;
@@ -507,7 +497,7 @@ function computerMove() {
     }
 }
 
-// ---- التفاعل (اللمس/الماوس) ----
+// ---- التفاعل ----
 let touchStart = null;
 renderer.domElement.addEventListener("pointerdown", e => touchStart = [e.clientX, e.clientY]);
 renderer.domElement.addEventListener("pointerup", e => {
@@ -526,11 +516,9 @@ function handleTap(e) {
     mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
     
     raycaster.setFromCamera(mouse, camera);
-    
-    // البحث عن المربع أو القطعة التي تم النقر عليها
     const intersects = raycaster.intersectObjects([...piecesGroup.children, ...squares], true);
-    let clickedSquare = null;
     
+    let clickedSquare = null;
     for (const hit of intersects) {
         let obj = hit.object;
         while (obj && !obj.userData.square) obj = obj.parent;
@@ -541,9 +529,22 @@ function handleTap(e) {
     }
     
     if (!clickedSquare) return;
-    
     const piece = chess.get(clickedSquare);
     
-    // اختيار قطعة بيضاء
     if (piece && piece.color === "w") {
-        selectedSquare 
+        selectedSquare = clickedSquare;
+        highlightSquares();
+        return;
+    }
+    
+    if (!selectedSquare) return;
+    
+    const validMove = chess.moves({ square: selectedSquare, verbose: true }).find(m => m.to === clickedSquare);
+    if (!validMove) return;
+    
+    if (validMove.promotion) {
+        pendingPromotion = { from: selectedSquare, to: clickedSquare };
+        $("promotion").style.display = "block";
+        return;
+    }
+    executeMove(selectedSquare, clickedSq
