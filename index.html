@@ -1,365 +1,47 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>شطرنج الوحوش 3D</title>
-    <!-- خط عربي مطابق للصورة -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        body {
-            background-color: #05020a;
-            color: white;
-            overflow-x: hidden;
-            /* ⚠️ هنا رابط صورة الخلفية (التنين والكهف). يمكنك استبداله برابط صورتك */
-            background-image: 
-                linear-gradient(to bottom, rgba(10, 5, 20, 0.3) 0%, rgba(10, 5, 20, 0.9) 70%, #0a0514 100%),
-                url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1000&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center top;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            min-height: 100vh;
-            padding-bottom: 80px; /* مساحة لشريط التنقل السفلي */
-        }
-
-        /* =========================================
-           الجزء العلوي (العنوان والأزرار)
-           ========================================= */
-        .top-section {
-            text-align: center;
-            padding: 50px 20px 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-
-        /* العنوان الرئيسي */
-        .title-main {
-            font-size: 45px;
-            font-weight: 900;
-            color: #ffffff;
-            text-shadow: 0 0 15px rgba(168, 85, 247, 0.8), 0 5px 10px rgba(0,0,0,0.8);
-            line-height: 1.1;
-            letter-spacing: -1px;
-        }
-
-        .title-3d {
-            font-size: 38px;
-            color: #fbcfe8;
-            text-shadow: 0 0 20px rgba(219, 39, 119, 0.9), 0 5px 10px rgba(0,0,0,0.8);
-        }
-
-        .title-sub {
-            font-size: 16px;
-            color: #e9d5ff;
-            margin-top: 5px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
-            letter-spacing: 1px;
-        }
-
-        /* زر الدخول إلى الساحة (الصغير) */
-        .enter-arena {
-            margin-top: 25px;
-            background: rgba(15, 10, 25, 0.8);
-            border: 1px solid #4a2e6b;
-            color: #d8b4fe;
-            padding: 6px 25px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-            cursor: pointer;
-        }
-
-        /* الزر الرئيسي (ابدأ المواجهة) */
-        .main-btn-wrapper {
-            margin-top: 15px;
-            width: 85%;
-            max-width: 350px;
-            background: linear-gradient(to bottom, #6b5b7a, #2d1b40);
-            padding: 3px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 10px rgba(255,255,255,0.2);
-            position: relative;
-        }
-
-        .main-btn {
-            width: 100%;
-            background: linear-gradient(to bottom, #2a153a, #11061c);
-            border: 1px solid #8b5cf6;
-            border-radius: 9px;
-            color: white;
-            padding: 15px;
-            font-size: 22px;
-            font-weight: 900;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
-        }
-
-        .main-btn:active {
-            transform: scale(0.98);
-            background: linear-gradient(to bottom, #1f0f2b, #0a0312);
-        }
-
-        .swords-icon {
-            font-size: 24px;
-            filter: drop-shadow(0 0 5px rgba(255,215,0,0.8));
-        }
-
-        /* =========================================
-           قسم أنماط اللعب (الكروت)
-           ========================================= */
-        .modes-section {
-            padding: 10px 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 15px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #e9d5ff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-title span {
-            font-size: 24px;
-        }
-
-        .section-sub {
-            font-size: 13px;
-            color: #a78bfa;
-        }
-
-        /* شبكة الكروت */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .card {
-            background: rgba(20, 10, 35, 0.85);
-            border: 2px solid #4c1d95;
-            border-radius: 12px;
-            padding: 10px;
-            position: relative;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 0 20px rgba(76, 29, 149, 0.3);
-            cursor: pointer;
-            transition: transform 0.1s;
-            overflow: hidden;
-        }
-
-        .card:active {
-            transform: scale(0.95);
-        }
-
-        /* شارة الكرت */
-        .badge {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid #7e22ce;
-            color: #e9d5ff;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 10px;
-            letter-spacing: 0.5px;
-        }
-
-        /* صورة/أيقونة الكرت */
-        .card-img {
-            font-size: 55px;
-            margin: 20px 0 10px;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8));
-        }
-
-        .card-title {
-            font-size: 15px;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 2px;
-        }
-
-        .card-desc {
-            font-size: 11px;
-            color: #c4b5fd;
-        }
-
-        /* ألوان الكروت المخصصة (لتطابق الصورة) */
-        .card.online { border-color: #4338ca; background: linear-gradient(to bottom, rgba(30, 27, 75, 0.9), rgba(15, 10, 35, 0.9)); }
-        .card.popular { border-color: #7f1d1d; background: linear-gradient(to bottom, rgba(69, 10, 10, 0.9), rgba(15, 10, 35, 0.9)); }
-        .card.event { border-color: #6b21a8; background: linear-gradient(to bottom, rgba(59, 7, 100, 0.9), rgba(15, 10, 35, 0.9)); }
-        .card.friends { border-color: #854d0e; background: linear-gradient(to bottom, rgba(66, 32, 6, 0.9), rgba(15, 10, 35, 0.9)); }
-
-        /* =========================================
-           شريط التنقل السفلي
-           ========================================= */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 70px;
-            background: rgba(10, 5, 20, 0.95);
-            border-top: 2px solid #3b1d60;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #6b7280;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .nav-icon {
-            font-size: 22px;
-            margin-bottom: 4px;
-            filter: grayscale(1) opacity(0.7);
-        }
-
-        /* حالة شريط التنقل النشط (الرئيسية) */
-        .nav-item.active {
-            color: #d8b4fe;
-        }
-
-        .nav-item.active .nav-icon {
-            filter: grayscale(0) opacity(1) drop-shadow(0 0 10px #a855f7);
-        }
-        
-        /* زخرفة الأيقونة النشطة */
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            bottom: 60px;
-            width: 30px;
-            height: 3px;
-            background: #a855f7;
-            box-shadow: 0 0 10px #a855f7;
-            border-radius: 5px;
-        }
-
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>شطرنج الوحوش 3D</title>
+<style>
+:root{color-scheme:dark;box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;background:#0a0514;font-family:system-ui,"Segoe UI",Tahoma,Arial,sans-serif}
+#app{position:relative;width:100%;max-width:480px;margin:0 auto;line-height:0}
+#app img{width:100%;height:auto;display:block}
+.hs{position:absolute;background:transparent;border:0;border-radius:14px;padding:0;cursor:pointer;transition:background .12s,box-shadow .12s}
+.hs:active{background:#c084fc33;box-shadow:0 0 18px #a855f7 inset}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:#1b0f2e;color:#e9d5ff;border:1px solid #7e22ce;border-radius:20px;padding:10px 20px;font-size:14px;line-height:1.4;opacity:0;pointer-events:none;transition:.25s;z-index:9;white-space:nowrap}
+#toast.on{opacity:1;transform:translateX(-50%)}
+</style>
 </head>
 <body>
-
-    <!-- الجزء العلوي: العنوان والأزرار -->
-    <div class="top-section">
-        <div class="title-main">شطرنج الوحوش <span class="title-3d">3D</span></div>
-        <div class="title-sub">ابدأ الأسطورة</div>
-
-        <div class="enter-arena">الدخول إلى الساحة</div>
-
-        <div class="main-btn-wrapper">
-            <!-- هذا الزر ينقلك لملف اللعبة -->
-            <button class="main-btn" onclick="goToGame()">
-                <span class="swords-icon">⚔️</span>
-                ابدأ المواجهة
-            </button>
-        </div>
-    </div>
-
-    <!-- قسم أنماط اللعب -->
-    <div class="modes-section">
-        <div class="section-header">
-            <div class="section-title"><span>🎮</span> أنماط اللعب</div>
-            <div class="section-sub">اختر معركتك</div>
-        </div>
-
-        <div class="cards-grid">
-            <!-- الكرت الأول -->
-            <div class="card online">
-                <div class="badge">ONLINE</div>
-                <div class="card-img">🪄</div>
-                <div class="card-title">الاتصال بالسحر</div>
-                <div class="card-desc">واجه لاعبين من العالم</div>
-            </div>
-
-            <!-- الكرت الثاني -->
-            <div class="card popular">
-                <div class="badge">POPULAR</div>
-                <div class="card-img">🤖</div>
-                <div class="card-title">الحكمة القديمة</div>
-                <div class="card-desc">تحدى الذكاء الاصطناعي</div>
-            </div>
-
-            <!-- الكرت الثالث -->
-            <div class="card event">
-                <div class="badge">EVENT</div>
-                <div class="card-img">🔮</div>
-                <div class="card-title">تحديات كبرى</div>
-                <div class="card-desc">أحداث ومكافآت نادرة</div>
-            </div>
-
-            <!-- الكرت الرابع -->
-            <div class="card friends">
-                <div class="badge">FRIENDS</div>
-                <div class="card-img">📜</div>
-                <div class="card-title">تحالف السحرة</div>
-                <div class="card-desc">العب مع أصدقائك</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- شريط التنقل السفلي -->
-    <div class="bottom-nav">
-        <div class="nav-item">
-            <div class="nav-icon">👤</div>
-            <span>حسابي</span>
-        </div>
-        <div class="nav-item">
-            <div class="nav-icon">📜</div>
-            <span>المتجر</span>
-        </div>
-        <div class="nav-item">
-            <div class="nav-icon">🏆</div>
-            <span>التصنيف</span>
-        </div>
-        <div class="nav-item active">
-            <div class="nav-icon">🏛️</div>
-            <span>الرئيسية</span>
-        </div>
-    </div>
-
-    <script>
-        // ⚠️ هنا مكان الربط بملف اللعبة الخاص بك
-        function goToGame() {
-            // غير "game.html" إلى اسم ملف اللعبة الذي قمت بفصله
-            window.location.href = "game.html"; 
-        }
-    </script>
+<div id="app">
+<img src="bg.jpg" alt="شطرنج الوحوش 3D" draggable="false">
+<button class="hs" aria-label="ابدأ المواجهة" data-go="game" style="left:27.62%;top:40.00%;width:45.06%;height:7.07%"></button>
+<button class="hs" aria-label="الاتصال بالسحر" data-go="soon:قريباً: اللعب أونلاين" style="left:2.62%;top:55.65%;width:45.64%;height:19.05%"></button>
+<button class="hs" aria-label="الحكمة القديمة" data-go="game" style="left:52.03%;top:55.65%;width:45.35%;height:19.05%"></button>
+<button class="hs" aria-label="تحديات كبرى" data-go="soon:قريباً: التحديات والأحداث" style="left:2.62%;top:76.05%;width:45.64%;height:15.78%"></button>
+<button class="hs" aria-label="تحالف السحرة" data-go="soon:قريباً: اللعب مع الأصدقاء" style="left:52.03%;top:76.05%;width:45.35%;height:15.78%"></button>
+<button class="hs" aria-label="حسابي" data-go="soon:صفحة الحساب قريباً" style="left:0.00%;top:91.97%;width:23.98%;height:8.03%"></button>
+<button class="hs" aria-label="المتجر" data-go="soon:المتجر قريباً" style="left:23.98%;top:91.97%;width:24.71%;height:8.03%"></button>
+<button class="hs" aria-label="التصنيف" data-go="soon:التصنيف قريباً" style="left:48.69%;top:91.97%;width:26.16%;height:8.03%"></button>
+<button class="hs" aria-label="الرئيسية" data-go="home" style="left:74.85%;top:91.97%;width:25.15%;height:8.03%"></button>
+</div>
+<div id="toast"></div>
+<script>
+var PREVIEW=false;
+var t=document.getElementById("toast"),tm;
+function toast(m){t.textContent=m;t.classList.add("on");clearTimeout(tm);tm=setTimeout(function(){t.classList.remove("on")},1800)}
+document.querySelectorAll(".hs").forEach(function(b){
+ b.onclick=function(){
+  var g=b.dataset.go;
+  if(g==="game"){ if(PREVIEW)toast("⚔️ ينتقل إلى game.html"); else location.href="game.html"; }
+  else if(g==="home"){ window.scrollTo({top:0,behavior:"smooth"}); }
+  else toast(g.split(":")[1]);
+ };
+});
+</script>
 </body>
 </html>
