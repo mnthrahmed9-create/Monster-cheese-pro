@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>شطرنج الوحوش 3D - الأزرار</title>
+    <title>الواجهة الرئيسية - شطرنج الوحوش 3D</title>
     <style>
         * {
             margin: 0;
@@ -20,15 +20,16 @@
             height: 100vh;
         }
 
+        /* الحاوية الرئيسية للصورة */
         #ui-container {
             position: relative;
             width: 100%;
             height: 100%;
             
-            /* ⚠️ غير هذا الاسم إلى اسم صورتك بالضبط إذا كان مختلفاً */
-            background-image: url('bg.png'); 
+            /* ⚠️ اسم الصورة هنا: تأكد أن الصورة المرفوعة اسمها menu.jpg */
+            background-image: url('menu.jpg'); 
             
-            background-size: 100% 100%; /* تمدد الصورة لتملأ الشاشة تماماً */
+            background-size: 100% 100%; /* تمدد الصورة لتملأ الشاشة */
             background-position: center;
             background-repeat: no-repeat;
         }
@@ -38,53 +39,51 @@
            ========================================= */
         .hotspot {
             position: absolute;
-            background: transparent;
+            background: transparent; /* شفافة 100% */
             border: none;
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 10px;
             z-index: 10;
             transition: background 0.1s;
         }
 
-        /* تأثير وميض خفيف جداً عند الضغط ليعرف المستخدم أنه ضغط على الزر */
+        /* تأثير وميض خفيف عند الضغط ليعرف المستخدم أنه ضغط */
         .hotspot:active {
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* =========================================
-           إحداثيات الأزرار (تم ضبطها بدقة على الصورة الجديدة)
-           ========================================= */
+        /* --- إحداثيات الأزرار المضبوطة --- */
         
-        /* --- الشريط العلوي --- */
+        /* الشريط العلوي */
         .btn-profile { top: 1.5%; left: 2%; width: 32%; height: 7.5%; } /* الملف الشخصي */
-        .btn-gold-plus { top: 1.5%; left: 55%; width: 5%; height: 3.5%; border-radius: 50%; } /* زر + الذهب */
+        .btn-gold-plus { top: 1.5%; left: 54.5%; width: 5%; height: 3.5%; border-radius: 50%; } /* زر + الذهب */
         .btn-gem-plus { top: 1.5%; left: 76%; width: 5%; height: 3.5%; border-radius: 50%; } /* زر + الجواهر */
-        .btn-settings { top: 1.5%; left: 84%; width: 6.5%; height: 4%; border-radius: 50%; } /* الإعدادات */
-        .btn-mail { top: 1.5%; right: 2%; width: 7.5%; height: 4%; border-radius: 10px; } /* الرسائل */
+        .btn-settings { top: 1.5%; left: 84.5%; width: 6%; height: 4%; border-radius: 50%; } /* الإعدادات */
+        .btn-mail { top: 1.5%; right: 2.5%; width: 7.5%; height: 4%; border-radius: 10px; } /* الرسائل */
 
-        /* --- القائمة اليسرى --- */
-        .btn-quests { top: 33%; left: 2%; width: 18%; height: 6.5%; } /* المهام اليومية */
-        .btn-achievements { top: 41%; left: 2%; width: 18%; height: 6.5%; } /* الإنجازات */
-        .btn-rewards { top: 49%; left: 2%; width: 18%; height: 6.5%; } /* مكافآت خاصة */
-        .btn-ranks { top: 57%; left: 2%; width: 18%; height: 6.5%; } /* رتب والألقاب */
+        /* القائمة اليسرى */
+        .btn-quests { top: 33.5%; left: 2%; width: 18%; height: 6%; } /* المهام اليومية */
+        .btn-achievements { top: 41%; left: 2%; width: 18%; height: 6%; } /* الإنجازات */
+        .btn-rewards { top: 48.5%; left: 2%; width: 18%; height: 6%; } /* مكافآت خاصة */
+        .btn-ranks { top: 56.5%; left: 2%; width: 18%; height: 6%; } /* رتب والألقاب */
 
-        /* --- صندوق المكافآت اليومية (اليمين) --- */
-        .btn-daily-chest { top: 33%; right: 2%; width: 28%; height: 20%; } /* صندوق المكافآت الكبير */
+        /* صندوق المكافآت اليومية (اليمين) */
+        .btn-daily-chest { top: 33.5%; right: 2%; width: 28%; height: 19.5%; } /* صندوق المكافآت */
         .btn-streak { top: 54%; right: 2%; width: 28%; height: 5%; } /* تاجات الأيام 1, 2, 3 */
 
-        /* --- الزر الرئيسي الكبير --- */
-        .btn-start { bottom: 28.5%; left: 22%; width: 56%; height: 7.5%; } /* ابدأ المواجهة */
+        /* الزر الرئيسي الكبير (ابدأ المواجهة) */
+        .btn-start { bottom: 28.5%; left: 22%; width: 56%; height: 7.5%; } 
 
-        /* --- الأزرار الثلاثة السفلية --- */
-        .btn-online { bottom: 12%; left: 3%; width: 29%; height: 9%; } /* اللعب أونلاين */
-        .btn-ai { bottom: 12%; left: 35.5%; width: 29%; height: 9%; } /* اللعب ضد الكمبيوتر */
-        .btn-challenges { bottom: 12%; right: 3%; width: 29%; height: 9%; } /* التحديات الكبرى */
+        /* الأزرار الثلاثة السفلية */
+        .btn-online { bottom: 12.5%; left: 2.5%; width: 29%; height: 8.5%; } /* اللعب أونلاين */
+        .btn-ai { bottom: 12.5%; left: 35.5%; width: 29%; height: 8.5%; } /* اللعب ضد الكمبيوتر */
+        .btn-challenges { bottom: 12.5%; right: 2.5%; width: 29%; height: 8.5%; } /* التحديات الكبرى */
 
-        /* --- شريط التنقل السفلي --- */
-        .nav-store { bottom: 0; left: 0; width: 25%; height: 9%; } /* المتجر */
-        .nav-inventory { bottom: 0; left: 25%; width: 25%; height: 9%; } /* المخزون */
-        .nav-account { bottom: 0; left: 50%; width: 25%; height: 9%; } /* حسابي */
-        .nav-home { bottom: 0; left: 75%; width: 25%; height: 9%; } /* الرئيسية */
+        /* شريط التنقل السفلي */
+        .nav-store { bottom: 0; left: 0; width: 25%; height: 9.5%; } /* المتجر */
+        .nav-inventory { bottom: 0; left: 25%; width: 25%; height: 9.5%; } /* المخزون */
+        .nav-account { bottom: 0; left: 50%; width: 25%; height: 9.5%; } /* حسابي */
+        .nav-home { bottom: 0; left: 75%; width: 25%; height: 9.5%; } /* الرئيسية */
 
     </style>
 </head>
@@ -109,14 +108,13 @@
         <div class="hotspot btn-daily-chest" onclick="alert('افتح صندوق المكافآت!')"></div>
         <div class="hotspot btn-streak" onclick="alert('سلسلة المكافآت')"></div>
 
-        <!-- الزر الرئيسي الكبير -->
-        <!-- ⚠️ ملاحظة: لتشغيل اللعبة، غير alert إلى game.html -->
-        <div class="hotspot btn-start" onclick="alert('ابدأ المواجهة')"></div>
+        <!-- 🟢 الأزرار اللي تنقل للعبة (مربوطة بملف game.html) -->
+        <div class="hotspot btn-start" onclick="window.location.href='game.html'"></div>
+        <div class="hotspot btn-ai" onclick="window.location.href='game.html'"></div>
 
-        <!-- الأزرار السفلية -->
-        <div class="hotspot btn-online" onclick="alert('اللعب أونلاين')"></div>
-        <div class="hotspot btn-ai" onclick="alert('اللعب ضد الكمبيوتر')"></div>
-        <div class="hotspot btn-challenges" onclick="alert('التحديات الكبرى')"></div>
+        <!-- الأزرار السفلية الباقية -->
+        <div class="hotspot btn-online" onclick="alert('اللعب أونلاين (قريباً)')"></div>
+        <div class="hotspot btn-challenges" onclick="alert('التحديات الكبرى (قريباً)')"></div>
 
         <!-- شريط التنقل السفلي -->
         <div class="hotspot nav-store" onclick="alert('المتجر')"></div>
