@@ -1,0 +1,803 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Monster Chess 3D - Battle</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+ margin:0;background:#080e19;color:#fff;
+ font-family:Cairo,sans-serif;overflow:hidden;
+}
+button,select{font-family:inherit;cursor:pointer}
+#game{position:fixed;inset:0}
+canvas{display:block;width:100%;height:100%}
+
+.topbar{
+ position:fixed;top:0;left:0;right:0;z-index:5;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:10px;background:#091321e8;
+ border-bottom:1px solid #d6a64c55;
+ backdrop-filter:blur(12px);
+}
+.brand{font-size:13px;font-weight:900;color:#ffd477}
+.brand small{display:block;color:#aab6c8;font-size:9px}
+.top-actions{display:flex;gap:6px;align-items:center}
+.ui-btn{
+ background:linear-gradient(145deg,#273953,#101a2a);
+ color:#fff;border:1px solid #ffffff24;
+ border-radius:10px;padding:8px 10px;font-size:11px;
+ box-shadow:0 3px 0 #050a12;
+}
+select{
+ background:#17253a;color:#ffd477;
+ border:1px solid #b58a42;border-radius:9px;
+ padding:7px;font-size:11px;
+}
+
+.status{
+ position:fixed;top:75px;left:50%;
+ transform:translateX(-50%);
+ z-index:4;background:#101c2ce8;
+ border:1px solid #d7ae5b66;
+ border-radius:30px;padding:8px 18px;
+ font-size:12px;font-weight:800;
+ white-space:nowrap;
+ box-shadow:0 5px 20px #0008;
+}
+.controls{
+ position:fixed;bottom:15px;left:0;right:0;
+ z-index:5;display:flex;justify-content:center;
+ gap:8px;padding:0 8px;
+}
+.controls button{
+ border:1px solid #d6a64c77;
+ background:linear-gradient(145deg,#293c59,#111b2c);
+ color:#fff;border-radius:13px;
+ padding:11px 13px;font-size:11px;font-weight:800;
+ box-shadow:0 5px 0 #050a12;
+}
+.controls button:active{transform:translateY(3px)}
+.controls .gold{
+ background:linear-gradient(145deg,#ffe7a0,#c58b32);
+ color:#251707;border:0;
+}
+
+.panel{
+ position:fixed;top:125px;right:10px;
+ z-index:4;background:#0c1727e8;
+ border:1px solid #d6a64c55;
+ border-radius:13px;padding:10px;
+ font-size:10px;min-width:110px;
+ pointer-events:none;
+}
+.panel b{color:#ffd477}
+.turn{font-size:11px;margin-top:5px;color:#d6e0ed}
+
+.overlay{
+ position:fixed;inset:0;z-index:20;
+ display:flex;align-items:center;justify-content:center;
+ background:#000c;padding:20px;
+}
+.dialog{
+ width:100%;max-width:350px;
+ border:1px solid #d7ae5b;
+ border-radius:22px;padding:23px;
+ background:linear-gradient(145deg,#243650,#0b1422);
+ text-align:center;box-shadow:0 20px 60px #000;
+}
+.dialog h1{font-size:22px;color:#ffd477}
+.dialog p{font-size:12px;color:#b8c5d8;line-height:1.9}
+.dialog button{
+ border:0;border-radius:12px;padding:12px 22px;
+ margin:5px;background:linear-gradient(145deg,#ffe5a0,#c58a32);
+ color:#251707;font-weight:900;
+}
+.dialog .secondary{
+ background:#263750;color:white;border:1px solid #ffffff33;
+}
+.hidden{display:none!important}
+
+@media(max-width:390px){
+ .controls{gap:5px}
+ .controls button{padding:10px 8px;font-size:10px}
+ .panel{top:120px;right:6px}
+}
+</style>
+</head>
+
+<body>
+
+<div id="game"></div>
+
+<header class="topbar">
+ <button class="ui-btn" onclick="goMenu()">🏠</button>
+ <div class="brand">
+  MONSTER CHESS 3D
+  <small>معركة الملوك</small>
+ </div>
+ <div class="top-actions">
+  <select id="difficulty" onchange="setDifficulty(this.value)">
+   <option value="easy">سهل</option>
+   <option value="hard">صعب</option>
+  </select>
+  <button class="ui-btn" onclick="resetGame()">🔄</button>
+ </div>
+</header>
+
+<div class="status" id="status">استعد للمعركة ⚔️</div>
+
+<div class="panel">
+ <b>⚔️ حالة المباراة</b>
+ <div class="turn" id="turn">دورك - الأبيض</div>
+ <div class="turn" id="moveCount">الحركات: 0</div>
+</div>
+
+<div class="controls">
+ <button onclick="undoMove()">↩ تراجع</button>
+ <button onclick="resetGame()">🔄 إعادة</button>
+ <button onclick="rotateCamera()">📷 الكاميرا</button>
+ <button class="gold" onclick="goMenu()">🏠 الرئيسية</button>
+</div>
+
+<div class="overlay" id="welcome">
+ <div class="dialog">
+  <div style="font-size:55px">🐉</div>
+  <h1>معركة الوحوش</h1>
+  <p>أنت تقود جيش الوحوش الأبيض، والكمبيوتر يقود الجيش الأسود. اختر مستوى الصعوبة وابدأ المعركة!</p>
+  <button onclick="beginGame()">ابدأ اللعب ⚔️</button>
+  <button class="secondary" onclick="goMenu()">العودة للرئيسية</button>
+ </div>
+</div>
+
+<div class="overlay hidden" id="result">
+ <div class="dialog">
+  <div style="font-size:55px" id="resultIcon">👑</div>
+  <h1 id="resultTitle">انتهت المباراة</h1>
+  <p id="resultText"></p>
+  <button onclick="resetGame()">مباراة جديدة</button>
+  <button class="secondary" onclick="goMenu()">الرئيسية</button>
+ </div>
+</div>
+
+<script type="importmap">
+{
+ "imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+  "chess":"https://cdn.jsdelivr.net/npm/chess.js@1.4.0/dist/esm/chess.js"
+ }
+}
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import {Chess} from "chess";
+
+const container=document.getElementById("game");
+const statusBox=document.getElementById("status");
+const turnBox=document.getElementById("turn");
+const moveBox=document.getElementById("moveCount");
+
+let chess=new Chess();
+let difficulty="easy";
+let selected=null;
+let legalTargets=[];
+let pieces={};
+let squareMeshes=[];
+let pieceMeshes=[];
+let busy=false;
+let moveNumber=0;
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x0a1422);
+scene.fog=new THREE.Fog(0x0a1422,15,35);
+
+const camera=new THREE.PerspectiveCamera(
+ 42,window.innerWidth/window.innerHeight,0.1,100
+);
+camera.position.set(0,10,12);
+
+const renderer=new THREE.WebGLRenderer({
+ antialias:true,alpha:false
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,1.7));
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.15;
+container.appendChild(renderer.domElement);
+
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;
+controls.dampingFactor=.06;
+controls.minDistance=8;
+controls.maxDistance=19;
+controls.maxPolarAngle=Math.PI*.48;
+controls.target.set(0,0,0);
+
+scene.add(new THREE.HemisphereLight(0xc9ddff,0x392617,2));
+
+const sun=new THREE.DirectionalLight(0xffe0a2,3);
+sun.position.set(-5,12,7);
+sun.castShadow=true;
+sun.shadow.mapSize.set(1024,1024);
+scene.add(sun);
+
+const blueLight=new THREE.PointLight(0x438cff,25,16);
+blueLight.position.set(5,5,-4);
+scene.add(blueLight);
+
+const goldLight=new THREE.PointLight(0xffa63b,22,15);
+goldLight.position.set(-5,4,5);
+scene.add(goldLight);
+
+/* MATERIALS */
+const materials={
+ white:new THREE.MeshStandardMaterial({
+  color:0xded6c5,metalness:.55,roughness:.3
+ }),
+ whiteGold:new THREE.MeshStandardMaterial({
+  color:0xe9b84d,metalness:.8,roughness:.22
+ }),
+ black:new THREE.MeshStandardMaterial({
+  color:0x24364f,metalness:.65,roughness:.27
+ }),
+ blackGold:new THREE.MeshStandardMaterial({
+  color:0x9c542b,metalness:.75,roughness:.25
+ }),
+ eye:new THREE.MeshStandardMaterial({
+  color:0xff3025,emissive:0xff1600,emissiveIntensity:2
+ }),
+ ground:new THREE.MeshStandardMaterial({
+  color:0x101b2a,metalness:.3,roughness:.7
+ })
+};
+
+/* FLOOR */
+const floor=new THREE.Mesh(
+ new THREE.PlaneGeometry(100,100),
+ materials.ground
+);
+floor.rotation.x=-Math.PI/2;
+floor.position.y=-.65;
+floor.receiveShadow=true;
+scene.add(floor);
+
+/* BOARD BASE */
+const base=new THREE.Mesh(
+ new THREE.BoxGeometry(8.5,.5,8.5),
+ new THREE.MeshStandardMaterial({
+  color:0x39251a,metalness:.65,roughness:.3
+ })
+);
+base.position.y=-.3;
+base.castShadow=true;
+base.receiveShadow=true;
+scene.add(base);
+
+const rim=new THREE.Mesh(
+ new THREE.BoxGeometry(8.25,.13,8.25),
+ materials.whiteGold
+);
+rim.position.y=-.015;
+scene.add(rim);
+
+const board=new THREE.Group();
+scene.add(board);
+
+const squareGeometry=new THREE.BoxGeometry(.99,.12,.99);
+const squareMaterials=[
+ new THREE.MeshStandardMaterial({color:0xe5c990,roughness:.55}),
+ new THREE.MeshStandardMaterial({color:0x483222,roughness:.5})
+];
+
+const squareMap={};
+
+function squarePosition(square){
+ const file=square.charCodeAt(0)-97;
+ const rank=Number(square[1])-1;
+ return {x:file-3.5,z:3.5-rank};
+}
+
+function createBoard(){
+ for(let rank=1;rank<=8;rank++){
+  for(let file=0;file<8;file++){
+   const name=String.fromCharCode(97+file)+rank;
+   const pos=squarePosition(name);
+   const mat=squareMaterials[(file+rank)%2];
+   const mesh=new THREE.Mesh(squareGeometry,mat);
+   mesh.position.set(pos.x,0,pos.z);
+   mesh.receiveShadow=true;
+   mesh.userData.square=name;
+   board.add(mesh);
+   squareMap[name]=mesh;
+   squareMeshes.push(mesh);
+  }
+ }
+}
+createBoard();
+
+/* 3D MONSTER PARTS */
+function sphere(group,material,x,y,z,sx,sy,sz){
+ const m=new THREE.Mesh(
+  new THREE.SphereGeometry(1,18,14),material
+ );
+ m.position.set(x,y,z);
+ m.scale.set(sx,sy,sz);
+ m.castShadow=true;
+ m.receiveShadow=true;
+ group.add(m);
+ return m;
+}
+function cylinder(group,material,x,y,z,rt,rb,h){
+ const m=new THREE.Mesh(
+  new THREE.CylinderGeometry(rt,rb,h,18),
+  material
+ );
+ m.position.set(x,y,z);
+ m.castShadow=true;
+ group.add(m);
+ return m;
+}
+function cone(group,material,x,y,z,r,h){
+ const m=new THREE.Mesh(
+  new THREE.ConeGeometry(r,h,16),material
+ );
+ m.position.set(x,y,z);
+ m.castShadow=true;
+ group.add(m);
+ return m;
+}
+function torus(group,material,x,y,z,r,t){
+ const m=new THREE.Mesh(
+  new THREE.TorusGeometry(r,t,10,24),material
+ );
+ m.position.set(x,y,z);
+ m.rotation.x=Math.PI/2;
+ group.add(m);
+ return m;
+}
+function eyePair(group,mat,y,z){
+ sphere(group,mat,-.18,y,z,.065,.065,.065);
+ sphere(group,mat,.18,y,z,.065,.065,.065);
+}
+
+/* DIFFERENT MONSTER DESIGNS */
+function buildMonster(type,color){
+ const group=new THREE.Group();
+ const main=color==="w"?materials.white:materials.black;
+ const gold=color==="w"?materials.whiteGold:materials.blackGold;
+ const monsterColor=main;
+ 
+ /* common base */
+ cylinder(group,gold,0,.12,0,.36,.42,.18);
+ torus(group,gold,0,.22,0,.34,.045);
+ 
+ if(type==="p"){
+  /* PAWN - little monster */
+  cylinder(group,main,0,.43,0,.24,.3,.38);
+  sphere(group,main,0,.77,0,.24,.25,.24);
+  cone(group,gold,0,1.05,0,.12,.3);
+  eyePair(group,materials.eye,.78,.2);
+  cone(group,gold,-.26,.55,0,.09,.25);
+  cone(group,gold,.26,.55,0,.09,.25);
+ }
+ 
+ if(type==="r"){
+  /* ROOK - fortress monster */
+  cylinder(group,main,0,.48,0,.31,.35,.55);
+  cylinder(group,gold,0,.83,0,.35,.34,.12);
+  for(let i=0;i<4;i++){
+   let a=i*Math.PI/2;
+   const x=Math.cos(a)*.24,z=Math.sin(a)*.24;
+   const tower=cylinder(group,gold,x,1.03,z,.09,.09,.32);
+  }
+  sphere(group,main,0,.91,0,.23,.23,.23);
+  eyePair(group,materials.eye,.94,.21);
+ }
+ 
+ if(type==="n"){
+  /* KNIGHT - beast head */
+  cylinder(group,main,0,.42,0,.3,.34,.42);
+  const head=sphere(group,main,0,.83,0,.23,.35,.23);
+  head.rotation.z=-.3;
+  sphere(group,main,0,1.04,-.12,.18,.23,.2);
+  cone(group,gold,-.16,1.24,-.12,.09,.28);
+  cone(group,gold,.16,1.24,-.12,.09,.28);
+  eyePair(group,materials.eye,.88,.2);
+  cone(group,gold,0,.68,.28,.13,.25);
+ }
+ 
+ if(type==="b"){
+  /* BISHOP - wizard monster */
+  cylinder(group,main,0,.45,0,.27,.32,.48);
+  sphere(group,main,0,.88,0,.25,.28,.24);
+  cone(group,gold,0,1.25,0,.28,.55);
+  sphere(group,materials.eye,0,1.25,.22,.07,.07,.07);
+  eyePair(group,materials.eye,.9,.2);
+  torus(group,gold,0,.63,0,.29,.035);
+ }
+ 
+ if(type==="q"){
+  /* QUEEN - monster queen */
+  cylinder(group,main,0,.48,0,.29,.34,.55);
+  sphere(group,main,0,.88,0,.29,.3,.27);
+  for(let i=0;i<5;i++){
+   let a=i*Math.PI*2/5;
+   cone(group,gold,Math.cos(a)*.22,1.22,Math.sin(a)*.22,.12,.38);
+  }
+  sphere(group,gold,0,1.08,0,.26,.09,.26);
+  eyePair(group,materials.eye,.91,.23);
+ }
+ 
+ if(type==="k"){
+  /* KING - giant monster king */
+  cylinder(group,main,0,.48,0,.34,.4,.55);
+  sphere(group,main,0,.91,0,.33,.35,.3);
+  sphere(group,gold,0,1.22,0,.3,.1,.3);
+  for(let i=0;i<3;i++){
+   cone(group,gold,(i-1)*.22,1.43,0,.13,.38);
+  }
+  eyePair(group,materials.eye,.94,.27);
+  torus(group,gold,0,.68,0,.34,.045);
+  sphere(group,gold,0,.8,.28,.1,.1,.1);
+ }
+ 
+ /* monster glow ring */
+ const ring=new THREE.Mesh(
+  new THREE.TorusGeometry(.37,.018,8,32),
+  gold
+ );
+ ring.rotation.x=Math.PI/2;
+ ring.position.y=.05;
+ group.add(ring);
+ 
+ return group;
+}
+
+/* CHESS PIECES */
+function addPiece(square,piece){
+ const group=buildMonster(piece.type,piece.color);
+ const pos=squarePosition(square);
+ group.position.set(pos.x,.08,pos.z);
+ group.userData.square=square;
+ group.userData.color=piece.color;
+ group.traverse(child=>{
+  if(child.isMesh){
+   child.userData.square=square;
+  }
+ });
+ scene.add(group);
+ pieces[square]=group;
+ pieceMeshes.push(group);
+}
+
+function clearPieces(){
+ Object.values(pieces).forEach(p=>scene.remove(p));
+ pieces={};
+ pieceMeshes=[];
+}
+
+function syncPieces(){
+ clearPieces();
+ const position=chess.board();
+ for(let r=0;r<8;r++){
+  for(let f=0;f<8;f++){
+   const p=position[r][f];
+   if(!p)continue;
+   const sq=String.fromCharCode(97+f)+(8-r);
+   addPiece(sq,p);
+  }
+ }
+}
+
+function clearHighlights(){
+ squareMeshes.forEach(s=>{
+  s.material=squareMaterials[
+   ((s.userData.square.charCodeAt(0)-97)+Number(s.userData.square[1]))%2
+  ];
+ });
+}
+
+function highlightSquare(square,color){
+ const m=squareMap[square];
+ if(!m)return;
+ m.material=new THREE.MeshStandardMaterial({
+  color,emissive:color,emissiveIntensity:.25,
+  transparent:true,opacity:.9
+ });
+}
+
+function showMoves(square){
+ clearHighlights();
+ highlightSquare(square,0xd6a443);
+ const moves=chess.moves({square,verbose:true});
+ legalTargets=moves.map(m=>m.to);
+ legalTargets.forEach(to=>{
+  highlightSquare(to,0x39bd78);
+ });
+}
+
+/* INTERACTION */
+const raycaster=new THREE.Raycaster();
+const pointer=new THREE.Vector2();
+
+function findSquare(object){
+ let current=object;
+ while(current){
+  if(current.userData&&current.userData.square){
+   return current.userData.square;
+  }
+  current=current.parent;
+ }
+ return null;
+}
+
+function onPointerDown(event){
+ if(busy||chess.isGameOver())return;
+ if(chess.turn()!=="w")return;
+ 
+ const rect=renderer.domElement.getBoundingClientRect();
+ pointer.x=((event.clientX-rect.left)/rect.width)*2-1;
+ pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
+ raycaster.setFromCamera(pointer,camera);
+ 
+ const hits=raycaster.intersectObjects(
+  [...pieceMeshes,...squareMeshes],true
+ );
+ if(!hits.length)return;
+ 
+ const square=findSquare(hits[0].object);
+ if(!square)return;
+ 
+ const piece=chess.get(square);
+ 
+ if(selected && legalTargets.includes(square)){
+  makeMove(selected,square);
+  return;
+ }
+ 
+ if(piece&&piece.color==="w"){
+  selected=square;
+  showMoves(square);
+  return;
+ }
+ 
+ selected=null;
+ legalTargets=[];
+ clearHighlights();
+}
+
+renderer.domElement.addEventListener("pointerdown",onPointerDown);
+
+/* MOVE */
+function makeMove(from,to){
+ try{
+  const move=chess.move({
+   from,to,promotion:"q"
+  });
+  if(!move)return;
+  moveNumber++;
+  selected=null;
+  legalTargets=[];
+  clearHighlights();
+  syncPieces();
+  updateStatus();
+  if(chess.isGameOver()){
+   showResult();
+   return;
+  }
+  if(chess.turn()==="b"){
+   busy=true;
+   statusBox.textContent="الوحش الأسود يفكر... 🤖";
+   setTimeout(computerMove,450);
+  }
+ }catch(e){
+  console.log(e);
+ }
+}
+
+/* COMPUTER AI */
+const values={p:100,n:320,b:330,r:500,q:900,k:20000};
+
+function evaluate(){
+ let score=0;
+ const b=chess.board();
+ for(let r=0;r<8;r++){
+  for(let f=0;f<8;f++){
+   const p=b[r][f];
+   if(!p)continue;
+   const v=values[p.type];
+   score+=(p.color==="b"?v:-v);
+  }
+ }
+ return score;
+}
+
+function minimax(depth,alpha,beta){
+ if(depth===0||chess.isGameOver()){
+  if(chess.isCheckmate()){
+   return chess.turn()==="b"?-100000:100000;
+  }
+  return evaluate();
+ }
+ 
+ const maximizing=chess.turn()==="b";
+ const moves=chess.moves();
+ if(maximizing){
+  let best=-Infinity;
+  for(const m of moves){
+   chess.move(m);
+   const val=minimax(depth-1,alpha,beta);
+   chess.undo();
+   best=Math.max(best,val);
+   alpha=Math.max(alpha,best);
+   if(beta<=alpha)break;
+  }
+  return best;
+ }else{
+  let best=Infinity;
+  for(const m of moves){
+   chess.move(m);
+   const val=minimax(depth-1,alpha,beta);
+   chess.undo();
+   best=Math.min(best,val);
+   beta=Math.min(beta,best);
+   if(beta<=alpha)break;
+  }
+  return best;
+ }
+}
+
+function computerMove(){
+ if(chess.isGameOver()){
+  busy=false;showResult();return;
+ }
+ const moves=chess.moves();
+ if(!moves.length){
+  busy=false;showResult();return;
+ }
+ let chosen;
+ if(difficulty==="easy"){
+  chosen=moves[Math.floor(Math.random()*moves.length)];
+ }else{
+  let best=-Infinity;
+  let options=[];
+  for(const m of moves){
+   chess.move(m);
+   const score=minimax(2,-Infinity,Infinity);
+   chess.undo();
+   if(score>best){
+    best=score;options=[m];
+   }else if(score===best){
+    options.push(m);
+   }
+  }
+  chosen=options[Math.floor(Math.random()*options.length)];
+ }
+ chess.move(chosen);
+ moveNumber++;
+ syncPieces();
+ busy=false;
+ updateStatus();
+ if(chess.isGameOver())showResult();
+}
+
+/* STATUS */
+function updateStatus(){
+ moveBox.textContent="الحركات: "+moveNumber;
+ if(chess.isGameOver()){
+  statusBox.textContent="انتهت المباراة 🏁";
+ }else if(chess.isCheck()){
+  statusBox.textContent="⚠️ كش!";
+ }else if(chess.turn()==="w"){
+  statusBox.textContent="دورك الآن ⚔️";
+ }else{
+  statusBox.textContent="دور الكمبيوتر 🤖";
+ }
+ turnBox.textContent=chess.turn()==="w"?"دورك - الأبيض":"دور الأسود";
+}
+
+function showResult(){
+ let title="تعادل!";
+ let text="انتهت المباراة بالتعادل.";
+ let icon="🤝";
+ if(chess.isCheckmate()){
+  if(chess.turn()==="b"){
+   title="انتصرت! 👑";
+   text="أحسنت! لقد هزمت جيش الوحوش الأسود.";
+   icon="🏆";
+  }else{
+   title="هزمت هذه المرة!";
+   text="الكمبيوتر انتصر عليك. حاول مرة أخرى!";
+   icon="🐉";
+  }
+ }else if(chess.isStalemate()){
+  text="تعادل بسبب الجمود.";
+ }else if(chess.isDraw()){
+  text="المباراة انتهت بالتعادل.";
+ }
+ document.getElementById("resultTitle").textContent=title;
+ document.getElementById("resultText").textContent=text;
+ document.getElementById("resultIcon").textContent=icon;
+ document.getElementById("result").classList.remove("hidden");
+}
+
+/* BUTTONS */
+window.beginGame=function(){
+ document.getElementById("welcome").classList.add("hidden");
+ resetGame();
+};
+window.setDifficulty=function(value){
+ difficulty=value;
+};
+window.resetGame=function(){
+ chess.reset();
+ selected=null;
+ legalTargets=[];
+ moveNumber=0;
+ busy=false;
+ document.getElementById("result").classList.add("hidden");
+ document.getElementById("welcome").classList.add("hidden");
+ syncPieces();
+ clearHighlights();
+ updateStatus();
+};
+window.undoMove=function(){
+ if(busy)return;
+ if(chess.history().length===0)return;
+ chess.undo();
+ if(chess.turn()==="b"&&chess.history().length>0){
+  chess.undo();
+ }
+ moveNumber=chess.history().length;
+ selected=null;
+ legalTargets=[];
+ syncPieces();
+ clearHighlights();
+ updateStatus();
+ document.getElementById("result").classList.add("hidden");
+};
+window.rotateCamera=function(){
+ const p=camera.position.clone();
+ camera.position.set(-p.x,p.y,-p.z);
+ controls.update();
+};
+window.goMenu=function(){
+ window.location.href="index.html";
+};
+
+/* RESIZE */
+window.addEventListener("resize",()=>{
+ camera.aspect=window.innerWidth/window.innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(window.innerWidth,window.innerHeight);
+});
+
+/* ANIMATION */
+const clock=new THREE.Clock();
+function animate(){
+ requestAnimationFrame(animate);
+ const t=clock.getElapsedTime();
+ pieceMeshes.forEach((p,i)=>{
+  p.position.y=.08+Math.sin(t*1.5+i)*.018;
+ });
+ controls.update();
+ renderer.render(scene,camera);
+}
+syncPieces();
+updateStatus();
+animate();
+
+</script>
+</body>
+</html>
